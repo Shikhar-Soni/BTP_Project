@@ -1,0 +1,1760 @@
+23-03-03 09:54:24.962 - INFO:   name: sr_ffhq
+  phase: train
+  gpu_ids: [1, 2, 0]
+  path:[
+    log: experiments/sr_ffhq_230303_095424/logs
+    tb_logger: experiments/sr_ffhq_230303_095424/tb_logger
+    results: experiments/sr_ffhq_230303_095424/results
+    checkpoint: experiments/sr_ffhq_230303_095424/checkpoint
+    resume_state: None
+    experiments_root: experiments/sr_ffhq_230303_095424
+  ]
+  datasets:[
+    train:[
+      name: MRI
+      mode: HR
+      dataroot: /home/aditya/Test/mri_64_256
+      datatype: img
+      l_resolution: 64
+      r_resolution: 256
+      batch_size: 4
+      num_workers: 8
+      use_shuffle: True
+      data_len: -1
+    ]
+    val:[
+      name: MRI
+      mode: LRHR
+      dataroot: /home/aditya/Test/mri_64_256
+      datatype: img
+      l_resolution: 64
+      r_resolution: 256
+      data_len: 3
+    ]
+  ]
+  model:[
+    which_model_G: sr3
+    finetune_norm: False
+    unet:[
+      in_channel: 6
+      out_channel: 3
+      inner_channel: 64
+      channel_multiplier: [1, 2, 4, 4, 8, 8]
+      attn_res: [16]
+      res_blocks: 2
+      dropout: 0
+    ]
+    beta_schedule:[
+      train:[
+        schedule: linear
+        n_timestep: 2000
+        linear_start: 1e-06
+        linear_end: 0.01
+      ]
+      val:[
+        schedule: linear
+        n_timestep: 2000
+        linear_start: 1e-06
+        linear_end: 0.01
+      ]
+    ]
+    diffusion:[
+      image_size: 256
+      channels: 3
+      conditional: True
+    ]
+  ]
+  train:[
+    n_iter: 300000
+    val_freq: 5000.0
+    save_checkpoint_freq: 10000.0
+    print_freq: 200
+    optimizer:[
+      type: adam
+      lr: 1e-07
+    ]
+    ema_scheduler:[
+      step_start_ema: 5000
+      update_ema_every: 1
+      ema_decay: 0.9999
+    ]
+  ]
+  wandb:[
+    project: sr_ffhq
+  ]
+  distributed: True
+  log_wandb_ckpt: False
+  log_eval: False
+  enable_wandb: False
+
+23-03-03 09:54:24.983 - INFO: Dataset [LRHRDataset - MRI] is created.
+23-03-03 09:54:25.010 - INFO: Dataset [LRHRDataset - MRI] is created.
+23-03-03 09:54:25.010 - INFO: Initial Dataset Finished
+23-03-03 09:54:25.840 - INFO: Initialization method [orthogonal]
+23-03-03 09:54:30.477 - INFO: Network G structure: DataParallel - GaussianDiffusion, with parameters: 107,141,763
+23-03-03 09:54:30.477 - INFO: GaussianDiffusion(
+  (denoise_fn): UNet(
+    (noise_level_mlp): Sequential(
+      (0): PositionalEncoding()
+      (1): Linear(in_features=64, out_features=256, bias=True)
+      (2): Swish()
+      (3): Linear(in_features=256, out_features=64, bias=True)
+    )
+    (downs): ModuleList(
+      (0): Conv2d(6, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (1): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=64, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 64, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 64, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Identity()
+        )
+      )
+      (2): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=64, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 64, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 64, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Identity()
+        )
+      )
+      (3): Downsample(
+        (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+      )
+      (4): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=128, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 64, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 128, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (5): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=128, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 128, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 128, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Identity()
+        )
+      )
+      (6): Downsample(
+        (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+      )
+      (7): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=256, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 128, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (8): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=256, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Identity()
+        )
+      )
+      (9): Downsample(
+        (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+      )
+      (10): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=256, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Identity()
+        )
+      )
+      (11): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=256, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Identity()
+        )
+      )
+      (12): Downsample(
+        (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+      )
+      (13): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (attn): SelfAttention(
+          (norm): GroupNorm(32, 512, eps=1e-05, affine=True)
+          (qkv): Conv2d(512, 1536, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (out): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (14): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Identity()
+        )
+        (attn): SelfAttention(
+          (norm): GroupNorm(32, 512, eps=1e-05, affine=True)
+          (qkv): Conv2d(512, 1536, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (out): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (15): Downsample(
+        (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+      )
+      (16): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Identity()
+        )
+      )
+      (17): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Identity()
+        )
+      )
+    )
+    (mid): ModuleList(
+      (0): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Identity()
+        )
+        (attn): SelfAttention(
+          (norm): GroupNorm(32, 512, eps=1e-05, affine=True)
+          (qkv): Conv2d(512, 1536, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (out): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (1): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Identity()
+        )
+      )
+    )
+    (ups): ModuleList(
+      (0): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 1024, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(1024, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (1): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 1024, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(1024, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (2): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 1024, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(1024, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (3): Upsample(
+        (up): Upsample(scale_factor=2.0, mode=nearest)
+        (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (4): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 1024, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(1024, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (attn): SelfAttention(
+          (norm): GroupNorm(32, 512, eps=1e-05, affine=True)
+          (qkv): Conv2d(512, 1536, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (out): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (5): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 1024, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(1024, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (attn): SelfAttention(
+          (norm): GroupNorm(32, 512, eps=1e-05, affine=True)
+          (qkv): Conv2d(512, 1536, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (out): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (6): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=512, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 768, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(768, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(768, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+        (attn): SelfAttention(
+          (norm): GroupNorm(32, 512, eps=1e-05, affine=True)
+          (qkv): Conv2d(512, 1536, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (out): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (7): Upsample(
+        (up): Upsample(scale_factor=2.0, mode=nearest)
+        (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (8): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=256, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 768, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(768, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(768, 256, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (9): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=256, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (10): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=256, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (11): Upsample(
+        (up): Upsample(scale_factor=2.0, mode=nearest)
+        (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (12): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=256, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (13): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=256, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 512, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(512, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (14): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=256, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 384, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(384, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(384, 256, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (15): Upsample(
+        (up): Upsample(scale_factor=2.0, mode=nearest)
+        (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (16): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=128, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 384, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 128, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(384, 128, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (17): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=128, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 256, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(256, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 128, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (18): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=128, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 192, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(192, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 128, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(192, 128, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (19): Upsample(
+        (up): Upsample(scale_factor=2.0, mode=nearest)
+        (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (20): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=64, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 192, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(192, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 64, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (21): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=64, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 128, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(128, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 64, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+      (22): ResnetBlocWithAttn(
+        (res_block): ResnetBlock(
+          (noise_func): FeatureWiseAffine(
+            (noise_func): Sequential(
+              (0): Linear(in_features=64, out_features=64, bias=True)
+            )
+          )
+          (block1): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 128, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(128, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (block2): Block(
+            (block): Sequential(
+              (0): GroupNorm(32, 64, eps=1e-05, affine=True)
+              (1): Swish()
+              (2): Identity()
+              (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            )
+          )
+          (res_conv): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1))
+        )
+      )
+    )
+    (final_conv): Block(
+      (block): Sequential(
+        (0): GroupNorm(32, 64, eps=1e-05, affine=True)
+        (1): Swish()
+        (2): Identity()
+        (3): Conv2d(64, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+    )
+  )
+  (loss_func): L1Loss()
+)
+23-03-03 09:54:30.480 - INFO: Model [DDPM] is created.
+23-03-03 09:54:30.480 - INFO: Initial Model Finished
+23-03-03 09:56:44.937 - INFO: <epoch:  1, iter:     200> l_pix: 9.2707e-01 
+23-03-03 09:58:46.190 - INFO: <epoch:  1, iter:     400> l_pix: 8.9220e-01 
+23-03-03 10:00:46.655 - INFO: <epoch:  1, iter:     600> l_pix: 8.8684e-01 
+23-03-03 10:02:48.040 - INFO: <epoch:  2, iter:     800> l_pix: 8.6854e-01 
+23-03-03 10:04:48.792 - INFO: <epoch:  2, iter:   1,000> l_pix: 8.5215e-01 
+23-03-03 10:06:48.880 - INFO: <epoch:  2, iter:   1,200> l_pix: 8.2659e-01 
+23-03-03 10:08:48.926 - INFO: <epoch:  2, iter:   1,400> l_pix: 8.0850e-01 
+23-03-03 10:10:49.951 - INFO: <epoch:  3, iter:   1,600> l_pix: 8.0326e-01 
+23-03-03 10:12:50.257 - INFO: <epoch:  3, iter:   1,800> l_pix: 7.9358e-01 
+23-03-03 10:14:50.175 - INFO: <epoch:  3, iter:   2,000> l_pix: 7.8324e-01 
+23-03-03 10:16:50.270 - INFO: <epoch:  3, iter:   2,200> l_pix: 7.7898e-01 
+23-03-03 10:18:51.539 - INFO: <epoch:  4, iter:   2,400> l_pix: 7.7056e-01 
+23-03-03 10:20:51.954 - INFO: <epoch:  4, iter:   2,600> l_pix: 7.6502e-01 
+23-03-03 10:23:01.887 - INFO: <epoch:  4, iter:   2,800> l_pix: 7.7217e-01 
+23-03-03 10:25:11.800 - INFO: <epoch:  4, iter:   3,000> l_pix: 7.6732e-01 
+23-03-03 10:27:23.197 - INFO: <epoch:  5, iter:   3,200> l_pix: 7.4910e-01 
+23-03-03 10:29:26.904 - INFO: <epoch:  5, iter:   3,400> l_pix: 7.5355e-01 
+23-03-03 10:31:34.507 - INFO: <epoch:  5, iter:   3,600> l_pix: 7.3352e-01 
+23-03-03 10:33:45.705 - INFO: <epoch:  6, iter:   3,800> l_pix: 7.3626e-01 
+23-03-03 10:35:55.986 - INFO: <epoch:  6, iter:   4,000> l_pix: 7.2524e-01 
+23-03-03 10:38:06.012 - INFO: <epoch:  6, iter:   4,200> l_pix: 7.1945e-01 
+23-03-03 10:40:14.794 - INFO: <epoch:  6, iter:   4,400> l_pix: 7.1937e-01 
+23-03-03 10:42:15.720 - INFO: <epoch:  7, iter:   4,600> l_pix: 7.0548e-01 
+23-03-03 10:44:15.585 - INFO: <epoch:  7, iter:   4,800> l_pix: 6.9787e-01 
+23-03-03 10:46:15.589 - INFO: <epoch:  7, iter:   5,000> l_pix: 7.5698e-01 
+23-03-03 10:54:46.191 - INFO: # Validation # PSNR: 5.8471e+00
+23-03-03 10:54:46.192 - INFO: <epoch:  7, iter:   5,000> psnr: 5.8471e+00
+23-03-03 10:56:46.344 - INFO: <epoch:  7, iter:   5,200> l_pix: 6.9224e-01 
+23-03-03 10:58:46.477 - INFO: <epoch:  8, iter:   5,400> l_pix: 6.8726e-01 
+23-03-03 11:00:46.125 - INFO: <epoch:  8, iter:   5,600> l_pix: 6.7591e-01 
+23-03-03 11:02:46.225 - INFO: <epoch:  8, iter:   5,800> l_pix: 6.6951e-01 
+23-03-03 11:04:46.398 - INFO: <epoch:  8, iter:   6,000> l_pix: 6.6318e-01 
+23-03-03 11:06:46.959 - INFO: <epoch:  9, iter:   6,200> l_pix: 6.6428e-01 
+23-03-03 11:08:46.904 - INFO: <epoch:  9, iter:   6,400> l_pix: 6.5406e-01 
+23-03-03 11:10:47.183 - INFO: <epoch:  9, iter:   6,600> l_pix: 6.4569e-01 
+23-03-03 11:12:47.901 - INFO: <epoch: 10, iter:   6,800> l_pix: 6.4008e-01 
+23-03-03 11:14:47.557 - INFO: <epoch: 10, iter:   7,000> l_pix: 6.3626e-01 
+23-03-03 11:16:47.611 - INFO: <epoch: 10, iter:   7,200> l_pix: 6.3393e-01 
+23-03-03 11:18:47.901 - INFO: <epoch: 10, iter:   7,400> l_pix: 6.2610e-01 
+23-03-03 11:20:48.283 - INFO: <epoch: 11, iter:   7,600> l_pix: 6.1599e-01 
+23-03-03 11:22:47.887 - INFO: <epoch: 11, iter:   7,800> l_pix: 6.1823e-01 
+23-03-03 11:24:47.847 - INFO: <epoch: 11, iter:   8,000> l_pix: 6.0662e-01 
+23-03-03 11:26:48.004 - INFO: <epoch: 11, iter:   8,200> l_pix: 5.9934e-01 
+23-03-03 11:28:48.482 - INFO: <epoch: 12, iter:   8,400> l_pix: 5.9954e-01 
+23-03-03 11:30:48.457 - INFO: <epoch: 12, iter:   8,600> l_pix: 6.6835e-01 
+23-03-03 11:32:48.732 - INFO: <epoch: 12, iter:   8,800> l_pix: 6.0490e-01 
+23-03-03 11:34:56.307 - INFO: <epoch: 12, iter:   9,000> l_pix: 5.7650e-01 
+23-03-03 11:37:06.504 - INFO: <epoch: 13, iter:   9,200> l_pix: 6.0699e-01 
+23-03-03 11:39:12.745 - INFO: <epoch: 13, iter:   9,400> l_pix: 5.6850e-01 
+23-03-03 11:41:12.915 - INFO: <epoch: 13, iter:   9,600> l_pix: 5.6407e-01 
+23-03-03 11:43:20.638 - INFO: <epoch: 14, iter:   9,800> l_pix: 5.5207e-01 
+23-03-03 11:45:30.320 - INFO: <epoch: 14, iter:  10,000> l_pix: 6.5359e-01 
+23-03-03 11:53:56.261 - INFO: # Validation # PSNR: 6.3866e+00
+23-03-03 11:53:56.262 - INFO: <epoch: 14, iter:  10,000> psnr: 6.3866e+00
+23-03-03 11:53:56.262 - INFO: Saving models and training states.
+23-03-03 11:53:57.780 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I10000_E14_gen.pth] ...
+23-03-03 11:55:58.028 - INFO: <epoch: 14, iter:  10,200> l_pix: 5.4787e-01 
+23-03-03 11:57:57.620 - INFO: <epoch: 14, iter:  10,400> l_pix: 5.4099e-01 
+23-03-03 11:59:58.005 - INFO: <epoch: 15, iter:  10,600> l_pix: 5.4092e-01 
+23-03-03 12:01:58.273 - INFO: <epoch: 15, iter:  10,800> l_pix: 5.4091e-01 
+23-03-03 12:03:58.635 - INFO: <epoch: 15, iter:  11,000> l_pix: 5.2353e-01 
+23-03-03 12:05:58.684 - INFO: <epoch: 15, iter:  11,200> l_pix: 5.2478e-01 
+23-03-03 12:08:07.344 - INFO: <epoch: 16, iter:  11,400> l_pix: 5.1696e-01 
+23-03-03 12:10:17.548 - INFO: <epoch: 16, iter:  11,600> l_pix: 5.6368e-01 
+23-03-03 12:12:27.300 - INFO: <epoch: 16, iter:  11,800> l_pix: 5.0126e-01 
+23-03-03 12:14:37.368 - INFO: <epoch: 16, iter:  12,000> l_pix: 4.9939e-01 
+23-03-03 12:16:48.531 - INFO: <epoch: 17, iter:  12,200> l_pix: 5.0082e-01 
+23-03-03 12:18:51.884 - INFO: <epoch: 17, iter:  12,400> l_pix: 6.3755e-01 
+23-03-03 12:20:52.239 - INFO: <epoch: 17, iter:  12,600> l_pix: 4.8306e-01 
+23-03-03 12:22:53.511 - INFO: <epoch: 18, iter:  12,800> l_pix: 4.7987e-01 
+23-03-03 12:24:54.106 - INFO: <epoch: 18, iter:  13,000> l_pix: 4.8613e-01 
+23-03-03 12:26:54.291 - INFO: <epoch: 18, iter:  13,200> l_pix: 4.7006e-01 
+23-03-03 12:28:54.426 - INFO: <epoch: 18, iter:  13,400> l_pix: 4.6501e-01 
+23-03-03 12:30:55.707 - INFO: <epoch: 19, iter:  13,600> l_pix: 5.3073e-01 
+23-03-03 12:32:56.256 - INFO: <epoch: 19, iter:  13,800> l_pix: 5.1107e-01 
+23-03-03 12:34:56.287 - INFO: <epoch: 19, iter:  14,000> l_pix: 4.9158e-01 
+23-03-03 12:36:56.633 - INFO: <epoch: 19, iter:  14,200> l_pix: 4.4707e-01 
+23-03-03 12:39:06.899 - INFO: <epoch: 20, iter:  14,400> l_pix: 5.5967e-01 
+23-03-03 12:41:17.012 - INFO: <epoch: 20, iter:  14,600> l_pix: 4.6848e-01 
+23-03-03 12:43:26.910 - INFO: <epoch: 20, iter:  14,800> l_pix: 4.3564e-01 
+23-03-03 12:45:37.153 - INFO: <epoch: 20, iter:  15,000> l_pix: 4.3087e-01 
+23-03-03 12:54:05.284 - INFO: # Validation # PSNR: 6.9753e+00
+23-03-03 12:54:05.285 - INFO: <epoch: 20, iter:  15,000> psnr: 6.9753e+00
+23-03-03 12:56:06.007 - INFO: <epoch: 21, iter:  15,200> l_pix: 4.3099e-01 
+23-03-03 12:58:05.623 - INFO: <epoch: 21, iter:  15,400> l_pix: 4.3468e-01 
+23-03-03 13:00:05.748 - INFO: <epoch: 21, iter:  15,600> l_pix: 4.1811e-01 
+23-03-03 13:02:06.821 - INFO: <epoch: 22, iter:  15,800> l_pix: 4.1054e-01 
+23-03-03 13:04:06.857 - INFO: <epoch: 22, iter:  16,000> l_pix: 4.0761e-01 
+23-03-03 13:06:06.886 - INFO: <epoch: 22, iter:  16,200> l_pix: 4.1294e-01 
+23-03-03 13:08:07.106 - INFO: <epoch: 22, iter:  16,400> l_pix: 4.9450e-01 
+23-03-03 13:10:08.075 - INFO: <epoch: 23, iter:  16,600> l_pix: 4.0392e-01 
+23-03-03 13:12:07.940 - INFO: <epoch: 23, iter:  16,800> l_pix: 3.9477e-01 
+23-03-03 13:14:07.878 - INFO: <epoch: 23, iter:  17,000> l_pix: 3.9065e-01 
+23-03-03 13:16:08.204 - INFO: <epoch: 23, iter:  17,200> l_pix: 3.8228e-01 
+23-03-03 13:18:09.013 - INFO: <epoch: 24, iter:  17,400> l_pix: 3.8265e-01 
+23-03-03 13:20:08.648 - INFO: <epoch: 24, iter:  17,600> l_pix: 3.7802e-01 
+23-03-03 13:22:08.491 - INFO: <epoch: 24, iter:  17,800> l_pix: 3.7329e-01 
+23-03-03 13:24:08.471 - INFO: <epoch: 24, iter:  18,000> l_pix: 3.6904e-01 
+23-03-03 13:26:08.959 - INFO: <epoch: 25, iter:  18,200> l_pix: 3.9486e-01 
+23-03-03 13:28:08.493 - INFO: <epoch: 25, iter:  18,400> l_pix: 3.6535e-01 
+23-03-03 13:30:08.280 - INFO: <epoch: 25, iter:  18,600> l_pix: 3.5411e-01 
+23-03-03 13:32:09.173 - INFO: <epoch: 26, iter:  18,800> l_pix: 3.6296e-01 
+23-03-03 13:34:08.738 - INFO: <epoch: 26, iter:  19,000> l_pix: 3.5153e-01 
+23-03-03 13:36:08.362 - INFO: <epoch: 26, iter:  19,200> l_pix: 3.6179e-01 
+23-03-03 13:38:08.305 - INFO: <epoch: 26, iter:  19,400> l_pix: 3.4624e-01 
+23-03-03 13:40:08.917 - INFO: <epoch: 27, iter:  19,600> l_pix: 3.4472e-01 
+23-03-03 13:42:08.494 - INFO: <epoch: 27, iter:  19,800> l_pix: 3.8221e-01 
+23-03-03 13:44:08.311 - INFO: <epoch: 27, iter:  20,000> l_pix: 3.3419e-01 
+23-03-03 13:52:48.676 - INFO: # Validation # PSNR: 7.6915e+00
+23-03-03 13:52:48.676 - INFO: <epoch: 27, iter:  20,000> psnr: 7.6915e+00
+23-03-03 13:52:48.677 - INFO: Saving models and training states.
+23-03-03 13:52:50.355 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I20000_E27_gen.pth] ...
+23-03-03 13:55:03.893 - INFO: <epoch: 27, iter:  20,200> l_pix: 3.3358e-01 
+23-03-03 13:57:17.605 - INFO: <epoch: 28, iter:  20,400> l_pix: 3.3346e-01 
+23-03-03 13:59:30.853 - INFO: <epoch: 28, iter:  20,600> l_pix: 3.7188e-01 
+23-03-03 14:01:44.274 - INFO: <epoch: 28, iter:  20,800> l_pix: 4.7920e-01 
+23-03-03 14:03:57.312 - INFO: <epoch: 28, iter:  21,000> l_pix: 3.2245e-01 
+23-03-03 14:06:11.163 - INFO: <epoch: 29, iter:  21,200> l_pix: 3.5757e-01 
+23-03-03 14:08:24.816 - INFO: <epoch: 29, iter:  21,400> l_pix: 3.1509e-01 
+23-03-03 14:10:38.121 - INFO: <epoch: 29, iter:  21,600> l_pix: 3.1181e-01 
+23-03-03 14:12:52.007 - INFO: <epoch: 30, iter:  21,800> l_pix: 5.5229e-01 
+23-03-03 14:15:05.385 - INFO: <epoch: 30, iter:  22,000> l_pix: 3.6282e-01 
+23-03-03 14:17:18.919 - INFO: <epoch: 30, iter:  22,200> l_pix: 3.0346e-01 
+23-03-03 14:19:31.944 - INFO: <epoch: 30, iter:  22,400> l_pix: 3.0393e-01 
+23-03-03 14:21:36.059 - INFO: <epoch: 31, iter:  22,600> l_pix: 3.0042e-01 
+23-03-03 14:23:36.094 - INFO: <epoch: 31, iter:  22,800> l_pix: 2.9627e-01 
+23-03-03 14:25:35.927 - INFO: <epoch: 31, iter:  23,000> l_pix: 2.9445e-01 
+23-03-03 14:27:35.580 - INFO: <epoch: 31, iter:  23,200> l_pix: 5.6972e-01 
+23-03-03 14:29:36.232 - INFO: <epoch: 32, iter:  23,400> l_pix: 2.8372e-01 
+23-03-03 14:31:36.397 - INFO: <epoch: 32, iter:  23,600> l_pix: 3.0864e-01 
+23-03-03 14:33:36.070 - INFO: <epoch: 32, iter:  23,800> l_pix: 2.8482e-01 
+23-03-03 14:35:35.786 - INFO: <epoch: 32, iter:  24,000> l_pix: 2.9898e-01 
+23-03-03 14:37:36.653 - INFO: <epoch: 33, iter:  24,200> l_pix: 3.2810e-01 
+23-03-03 14:39:36.706 - INFO: <epoch: 33, iter:  24,400> l_pix: 2.8335e-01 
+23-03-03 14:41:36.417 - INFO: <epoch: 33, iter:  24,600> l_pix: 2.7869e-01 
+23-03-03 14:43:36.838 - INFO: <epoch: 34, iter:  24,800> l_pix: 2.6952e-01 
+23-03-03 14:45:36.750 - INFO: <epoch: 34, iter:  25,000> l_pix: 2.6807e-01 
+23-03-03 14:54:03.338 - INFO: # Validation # PSNR: 8.3569e+00
+23-03-03 14:54:03.338 - INFO: <epoch: 34, iter:  25,000> psnr: 8.3569e+00
+23-03-03 14:56:03.319 - INFO: <epoch: 34, iter:  25,200> l_pix: 2.7186e-01 
+23-03-03 14:58:02.997 - INFO: <epoch: 34, iter:  25,400> l_pix: 2.6551e-01 
+23-03-03 15:00:03.552 - INFO: <epoch: 35, iter:  25,600> l_pix: 2.6513e-01 
+23-03-03 15:02:03.514 - INFO: <epoch: 35, iter:  25,800> l_pix: 2.6410e-01 
+23-03-03 15:04:03.131 - INFO: <epoch: 35, iter:  26,000> l_pix: 5.0990e-01 
+23-03-03 15:06:02.857 - INFO: <epoch: 35, iter:  26,200> l_pix: 2.6278e-01 
+23-03-03 15:08:03.672 - INFO: <epoch: 36, iter:  26,400> l_pix: 2.5752e-01 
+23-03-03 15:10:03.602 - INFO: <epoch: 36, iter:  26,600> l_pix: 2.5322e-01 
+23-03-03 15:12:03.184 - INFO: <epoch: 36, iter:  26,800> l_pix: 2.5288e-01 
+23-03-03 15:14:03.008 - INFO: <epoch: 36, iter:  27,000> l_pix: 2.5220e-01 
+23-03-03 15:16:03.725 - INFO: <epoch: 37, iter:  27,200> l_pix: 2.6603e-01 
+23-03-03 15:18:03.615 - INFO: <epoch: 37, iter:  27,400> l_pix: 2.7173e-01 
+23-03-03 15:20:03.294 - INFO: <epoch: 37, iter:  27,600> l_pix: 2.5723e-01 
+23-03-03 15:22:03.935 - INFO: <epoch: 38, iter:  27,800> l_pix: 2.4691e-01 
+23-03-03 15:24:11.519 - INFO: <epoch: 38, iter:  28,000> l_pix: 2.4193e-01 
+23-03-03 15:26:24.779 - INFO: <epoch: 38, iter:  28,200> l_pix: 2.4372e-01 
+23-03-03 15:28:38.213 - INFO: <epoch: 38, iter:  28,400> l_pix: 2.4923e-01 
+23-03-03 15:30:52.826 - INFO: <epoch: 39, iter:  28,600> l_pix: 2.3596e-01 
+23-03-03 15:33:06.300 - INFO: <epoch: 39, iter:  28,800> l_pix: 2.3524e-01 
+23-03-03 15:35:19.572 - INFO: <epoch: 39, iter:  29,000> l_pix: 2.3915e-01 
+23-03-03 15:37:33.192 - INFO: <epoch: 39, iter:  29,200> l_pix: 2.3724e-01 
+23-03-03 15:39:47.812 - INFO: <epoch: 40, iter:  29,400> l_pix: 2.3235e-01 
+23-03-03 15:42:01.098 - INFO: <epoch: 40, iter:  29,600> l_pix: 2.5744e-01 
+23-03-03 15:44:14.685 - INFO: <epoch: 40, iter:  29,800> l_pix: 2.3175e-01 
+23-03-03 15:46:28.308 - INFO: <epoch: 40, iter:  30,000> l_pix: 3.3906e-01 
+23-03-03 15:55:39.656 - INFO: # Validation # PSNR: 8.9484e+00
+23-03-03 15:55:39.656 - INFO: <epoch: 40, iter:  30,000> psnr: 8.9484e+00
+23-03-03 15:55:39.657 - INFO: Saving models and training states.
+23-03-03 15:55:41.279 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I30000_E40_gen.pth] ...
+23-03-03 15:57:41.764 - INFO: <epoch: 41, iter:  30,200> l_pix: 2.3257e-01 
+23-03-03 15:59:41.623 - INFO: <epoch: 41, iter:  30,400> l_pix: 2.2430e-01 
+23-03-03 16:01:41.532 - INFO: <epoch: 41, iter:  30,600> l_pix: 2.3580e-01 
+23-03-03 16:03:42.079 - INFO: <epoch: 42, iter:  30,800> l_pix: 2.2346e-01 
+23-03-03 16:05:46.356 - INFO: <epoch: 42, iter:  31,000> l_pix: 2.2677e-01 
+23-03-03 16:08:00.053 - INFO: <epoch: 42, iter:  31,200> l_pix: 2.2235e-01 
+23-03-03 16:10:13.449 - INFO: <epoch: 42, iter:  31,400> l_pix: 2.2381e-01 
+23-03-03 16:12:27.363 - INFO: <epoch: 43, iter:  31,600> l_pix: 4.5214e-01 
+23-03-03 16:14:40.863 - INFO: <epoch: 43, iter:  31,800> l_pix: 2.3891e-01 
+23-03-03 16:16:54.378 - INFO: <epoch: 43, iter:  32,000> l_pix: 2.1730e-01 
+23-03-03 16:19:07.553 - INFO: <epoch: 43, iter:  32,200> l_pix: 2.5075e-01 
+23-03-03 16:21:21.841 - INFO: <epoch: 44, iter:  32,400> l_pix: 2.1517e-01 
+23-03-03 16:23:35.623 - INFO: <epoch: 44, iter:  32,600> l_pix: 2.1627e-01 
+23-03-03 16:25:48.830 - INFO: <epoch: 44, iter:  32,800> l_pix: 2.4566e-01 
+23-03-03 16:28:02.126 - INFO: <epoch: 44, iter:  33,000> l_pix: 2.1122e-01 
+23-03-03 16:30:16.511 - INFO: <epoch: 45, iter:  33,200> l_pix: 2.2044e-01 
+23-03-03 16:32:30.012 - INFO: <epoch: 45, iter:  33,400> l_pix: 2.0863e-01 
+23-03-03 16:34:36.541 - INFO: <epoch: 45, iter:  33,600> l_pix: 2.0769e-01 
+23-03-03 16:36:37.464 - INFO: <epoch: 46, iter:  33,800> l_pix: 2.0593e-01 
+23-03-03 16:38:37.713 - INFO: <epoch: 46, iter:  34,000> l_pix: 2.0607e-01 
+23-03-03 16:40:37.520 - INFO: <epoch: 46, iter:  34,200> l_pix: 2.6528e-01 
+23-03-03 16:42:37.227 - INFO: <epoch: 46, iter:  34,400> l_pix: 2.1065e-01 
+23-03-03 16:44:38.014 - INFO: <epoch: 47, iter:  34,600> l_pix: 3.3094e-01 
+23-03-03 16:46:38.153 - INFO: <epoch: 47, iter:  34,800> l_pix: 2.0756e-01 
+23-03-03 16:48:37.964 - INFO: <epoch: 47, iter:  35,000> l_pix: 2.0258e-01 
+23-03-03 16:57:04.457 - INFO: # Validation # PSNR: 9.0329e+00
+23-03-03 16:57:04.458 - INFO: <epoch: 47, iter:  35,000> psnr: 9.0329e+00
+23-03-03 16:59:04.514 - INFO: <epoch: 47, iter:  35,200> l_pix: 1.9896e-01 
+23-03-03 17:01:05.180 - INFO: <epoch: 48, iter:  35,400> l_pix: 3.4096e-01 
+23-03-03 17:03:04.731 - INFO: <epoch: 48, iter:  35,600> l_pix: 1.9728e-01 
+23-03-03 17:05:04.280 - INFO: <epoch: 48, iter:  35,800> l_pix: 2.0480e-01 
+23-03-03 17:07:04.079 - INFO: <epoch: 48, iter:  36,000> l_pix: 2.0054e-01 
+23-03-03 17:09:04.902 - INFO: <epoch: 49, iter:  36,200> l_pix: 2.0197e-01 
+23-03-03 17:11:04.517 - INFO: <epoch: 49, iter:  36,400> l_pix: 1.9635e-01 
+23-03-03 17:13:04.309 - INFO: <epoch: 49, iter:  36,600> l_pix: 3.2224e-01 
+23-03-03 17:15:05.054 - INFO: <epoch: 50, iter:  36,800> l_pix: 1.9575e-01 
+23-03-03 17:17:04.890 - INFO: <epoch: 50, iter:  37,000> l_pix: 1.9566e-01 
+23-03-03 17:19:04.536 - INFO: <epoch: 50, iter:  37,200> l_pix: 2.8585e-01 
+23-03-03 17:21:04.421 - INFO: <epoch: 50, iter:  37,400> l_pix: 1.8860e-01 
+23-03-03 17:23:05.239 - INFO: <epoch: 51, iter:  37,600> l_pix: 1.8758e-01 
+23-03-03 17:25:04.992 - INFO: <epoch: 51, iter:  37,800> l_pix: 2.4555e-01 
+23-03-03 17:27:04.722 - INFO: <epoch: 51, iter:  38,000> l_pix: 1.9337e-01 
+23-03-03 17:29:04.711 - INFO: <epoch: 51, iter:  38,200> l_pix: 1.9312e-01 
+23-03-03 17:31:05.482 - INFO: <epoch: 52, iter:  38,400> l_pix: 1.8568e-01 
+23-03-03 17:33:05.186 - INFO: <epoch: 52, iter:  38,600> l_pix: 1.8567e-01 
+23-03-03 17:35:04.980 - INFO: <epoch: 52, iter:  38,800> l_pix: 1.8859e-01 
+23-03-03 17:37:04.978 - INFO: <epoch: 52, iter:  39,000> l_pix: 2.0971e-01 
+23-03-03 17:39:05.740 - INFO: <epoch: 53, iter:  39,200> l_pix: 1.8341e-01 
+23-03-03 17:41:05.404 - INFO: <epoch: 53, iter:  39,400> l_pix: 4.0998e-01 
+23-03-03 17:43:05.265 - INFO: <epoch: 53, iter:  39,600> l_pix: 2.0463e-01 
+23-03-03 17:45:05.971 - INFO: <epoch: 54, iter:  39,800> l_pix: 1.8593e-01 
+23-03-03 17:47:05.838 - INFO: <epoch: 54, iter:  40,000> l_pix: 3.5579e-01 
+23-03-03 17:55:32.232 - INFO: # Validation # PSNR: 9.4777e+00
+23-03-03 17:55:32.232 - INFO: <epoch: 54, iter:  40,000> psnr: 9.4777e+00
+23-03-03 17:55:32.233 - INFO: Saving models and training states.
+23-03-03 17:55:33.767 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I40000_E54_gen.pth] ...
+23-03-03 17:57:33.703 - INFO: <epoch: 54, iter:  40,200> l_pix: 1.8370e-01 
+23-03-03 17:59:33.693 - INFO: <epoch: 54, iter:  40,400> l_pix: 1.9440e-01 
+23-03-03 18:01:34.210 - INFO: <epoch: 55, iter:  40,600> l_pix: 1.7961e-01 
+23-03-03 18:03:33.772 - INFO: <epoch: 55, iter:  40,800> l_pix: 1.7809e-01 
+23-03-03 18:05:33.520 - INFO: <epoch: 55, iter:  41,000> l_pix: 2.5053e-01 
+23-03-03 18:07:33.571 - INFO: <epoch: 55, iter:  41,200> l_pix: 2.2512e-01 
+23-03-03 18:09:33.999 - INFO: <epoch: 56, iter:  41,400> l_pix: 1.9649e-01 
+23-03-03 18:11:33.491 - INFO: <epoch: 56, iter:  41,600> l_pix: 1.8952e-01 
+23-03-03 18:13:33.350 - INFO: <epoch: 56, iter:  41,800> l_pix: 2.4245e-01 
+23-03-03 18:15:33.332 - INFO: <epoch: 56, iter:  42,000> l_pix: 1.7432e-01 
+23-03-03 18:17:33.854 - INFO: <epoch: 57, iter:  42,200> l_pix: 1.9519e-01 
+23-03-03 18:19:33.600 - INFO: <epoch: 57, iter:  42,400> l_pix: 1.7360e-01 
+23-03-03 18:21:33.703 - INFO: <epoch: 57, iter:  42,600> l_pix: 1.9792e-01 
+23-03-03 18:23:34.529 - INFO: <epoch: 58, iter:  42,800> l_pix: 1.8488e-01 
+23-03-03 18:25:34.255 - INFO: <epoch: 58, iter:  43,000> l_pix: 2.0557e-01 
+23-03-03 18:27:34.114 - INFO: <epoch: 58, iter:  43,200> l_pix: 1.8941e-01 
+23-03-03 18:29:34.294 - INFO: <epoch: 58, iter:  43,400> l_pix: 1.7137e-01 
+23-03-03 18:31:34.884 - INFO: <epoch: 59, iter:  43,600> l_pix: 1.7101e-01 
+23-03-03 18:33:34.699 - INFO: <epoch: 59, iter:  43,800> l_pix: 1.7140e-01 
+23-03-03 18:35:34.623 - INFO: <epoch: 59, iter:  44,000> l_pix: 1.6817e-01 
+23-03-03 18:37:34.672 - INFO: <epoch: 59, iter:  44,200> l_pix: 1.7061e-01 
+23-03-03 18:39:35.158 - INFO: <epoch: 60, iter:  44,400> l_pix: 1.6849e-01 
+23-03-03 18:41:34.884 - INFO: <epoch: 60, iter:  44,600> l_pix: 1.7591e-01 
+23-03-03 18:43:34.844 - INFO: <epoch: 60, iter:  44,800> l_pix: 2.2612e-01 
+23-03-03 18:45:34.948 - INFO: <epoch: 60, iter:  45,000> l_pix: 1.8287e-01 
+23-03-03 18:54:01.491 - INFO: # Validation # PSNR: 9.4739e+00
+23-03-03 18:54:01.491 - INFO: <epoch: 60, iter:  45,000> psnr: 9.4739e+00
+23-03-03 18:56:02.026 - INFO: <epoch: 61, iter:  45,200> l_pix: 1.6605e-01 
+23-03-03 18:58:01.745 - INFO: <epoch: 61, iter:  45,400> l_pix: 3.6746e-01 
+23-03-03 19:00:07.484 - INFO: <epoch: 61, iter:  45,600> l_pix: 1.6813e-01 
+23-03-03 19:02:21.008 - INFO: <epoch: 62, iter:  45,800> l_pix: 1.9712e-01 
+23-03-03 19:04:34.209 - INFO: <epoch: 62, iter:  46,000> l_pix: 1.6744e-01 
+23-03-03 19:06:47.726 - INFO: <epoch: 62, iter:  46,200> l_pix: 3.8352e-01 
+23-03-03 19:09:00.638 - INFO: <epoch: 62, iter:  46,400> l_pix: 2.9816e-01 
+23-03-03 19:11:14.409 - INFO: <epoch: 63, iter:  46,600> l_pix: 1.6303e-01 
+23-03-03 19:13:27.996 - INFO: <epoch: 63, iter:  46,800> l_pix: 1.6317e-01 
+23-03-03 19:15:41.505 - INFO: <epoch: 63, iter:  47,000> l_pix: 1.6584e-01 
+23-03-03 19:17:54.569 - INFO: <epoch: 63, iter:  47,200> l_pix: 1.6408e-01 
+23-03-03 19:20:08.576 - INFO: <epoch: 64, iter:  47,400> l_pix: 1.6140e-01 
+23-03-03 19:22:22.078 - INFO: <epoch: 64, iter:  47,600> l_pix: 1.6764e-01 
+23-03-03 19:24:35.262 - INFO: <epoch: 64, iter:  47,800> l_pix: 2.9140e-01 
+23-03-03 19:26:48.393 - INFO: <epoch: 64, iter:  48,000> l_pix: 1.5950e-01 
+23-03-03 19:28:57.564 - INFO: <epoch: 65, iter:  48,200> l_pix: 1.9291e-01 
+23-03-03 19:30:57.426 - INFO: <epoch: 65, iter:  48,400> l_pix: 1.5793e-01 
+23-03-03 19:32:57.088 - INFO: <epoch: 65, iter:  48,600> l_pix: 1.6268e-01 
+23-03-03 19:34:57.667 - INFO: <epoch: 66, iter:  48,800> l_pix: 2.3335e-01 
+23-03-03 19:36:57.781 - INFO: <epoch: 66, iter:  49,000> l_pix: 1.5709e-01 
+23-03-03 19:38:57.577 - INFO: <epoch: 66, iter:  49,200> l_pix: 1.9004e-01 
+23-03-03 19:40:57.387 - INFO: <epoch: 66, iter:  49,400> l_pix: 1.5662e-01 
+23-03-03 19:43:10.382 - INFO: <epoch: 67, iter:  49,600> l_pix: 1.5296e-01 
+23-03-03 19:45:25.578 - INFO: <epoch: 67, iter:  49,800> l_pix: 1.5138e-01 
+23-03-03 19:47:27.402 - INFO: <epoch: 67, iter:  50,000> l_pix: 1.5583e-01 
+23-03-03 19:55:53.487 - INFO: # Validation # PSNR: 9.6053e+00
+23-03-03 19:55:53.488 - INFO: <epoch: 67, iter:  50,000> psnr: 9.6053e+00
+23-03-03 19:55:53.489 - INFO: Saving models and training states.
+23-03-03 19:55:55.013 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I50000_E67_gen.pth] ...
+23-03-03 19:57:54.993 - INFO: <epoch: 67, iter:  50,200> l_pix: 1.6680e-01 
+23-03-03 19:59:56.251 - INFO: <epoch: 68, iter:  50,400> l_pix: 4.1677e-01 
+23-03-03 20:02:11.877 - INFO: <epoch: 68, iter:  50,600> l_pix: 3.1397e-01 
+23-03-03 20:04:16.927 - INFO: <epoch: 68, iter:  50,800> l_pix: 1.5346e-01 
+23-03-03 20:06:17.743 - INFO: <epoch: 68, iter:  51,000> l_pix: 1.5949e-01 
+23-03-03 20:08:33.959 - INFO: <epoch: 69, iter:  51,200> l_pix: 1.8427e-01 
+23-03-03 20:10:47.905 - INFO: <epoch: 69, iter:  51,400> l_pix: 1.6345e-01 
+23-03-03 20:12:48.027 - INFO: <epoch: 69, iter:  51,600> l_pix: 1.5414e-01 
+23-03-03 20:14:48.868 - INFO: <epoch: 70, iter:  51,800> l_pix: 1.5296e-01 
+23-03-03 20:16:58.375 - INFO: <epoch: 70, iter:  52,000> l_pix: 1.5363e-01 
+23-03-03 20:19:13.449 - INFO: <epoch: 70, iter:  52,200> l_pix: 1.6234e-01 
+23-03-03 20:21:19.280 - INFO: <epoch: 70, iter:  52,400> l_pix: 1.5199e-01 
+23-03-03 20:23:19.726 - INFO: <epoch: 71, iter:  52,600> l_pix: 1.4976e-01 
+23-03-03 20:25:19.467 - INFO: <epoch: 71, iter:  52,800> l_pix: 1.4914e-01 
+23-03-03 20:27:31.635 - INFO: <epoch: 71, iter:  53,000> l_pix: 1.9211e-01 
+23-03-03 20:29:43.412 - INFO: <epoch: 71, iter:  53,200> l_pix: 1.8122e-01 
+23-03-03 20:31:54.561 - INFO: <epoch: 72, iter:  53,400> l_pix: 1.8844e-01 
+23-03-03 20:34:07.429 - INFO: <epoch: 72, iter:  53,600> l_pix: 1.5762e-01 
+23-03-03 20:36:16.535 - INFO: <epoch: 72, iter:  53,800> l_pix: 1.4802e-01 
+23-03-03 20:38:31.622 - INFO: <epoch: 72, iter:  54,000> l_pix: 1.4907e-01 
+23-03-03 20:40:32.273 - INFO: <epoch: 73, iter:  54,200> l_pix: 2.5523e-01 
+23-03-03 20:42:32.679 - INFO: <epoch: 73, iter:  54,400> l_pix: 1.4596e-01 
+23-03-03 20:45:34.313 - INFO: <epoch: 73, iter:  54,600> l_pix: 1.4950e-01 
+23-03-03 20:49:24.799 - INFO: <epoch: 74, iter:  54,800> l_pix: 1.4570e-01 
+23-03-03 20:53:10.624 - INFO: <epoch: 74, iter:  55,000> l_pix: 1.5095e-01 
+23-03-03 21:01:29.327 - INFO: # Validation # PSNR: 9.8038e+00
+23-03-03 21:01:29.328 - INFO: <epoch: 74, iter:  55,000> psnr: 9.8038e+00
+23-03-03 21:05:15.110 - INFO: <epoch: 74, iter:  55,200> l_pix: 2.5443e-01 
+23-03-03 21:07:32.863 - INFO: <epoch: 74, iter:  55,400> l_pix: 1.4302e-01 
+23-03-03 21:09:46.928 - INFO: <epoch: 75, iter:  55,600> l_pix: 1.4341e-01 
+23-03-03 21:11:56.515 - INFO: <epoch: 75, iter:  55,800> l_pix: 1.4441e-01 
+23-03-03 21:13:57.359 - INFO: <epoch: 75, iter:  56,000> l_pix: 1.4312e-01 
+23-03-03 21:15:57.958 - INFO: <epoch: 75, iter:  56,200> l_pix: 1.4375e-01 
+23-03-03 21:17:59.766 - INFO: <epoch: 76, iter:  56,400> l_pix: 1.4021e-01 
+23-03-03 21:20:07.675 - INFO: <epoch: 76, iter:  56,600> l_pix: 1.4177e-01 
+23-03-03 21:22:13.717 - INFO: <epoch: 76, iter:  56,800> l_pix: 1.4282e-01 
+23-03-03 21:24:23.505 - INFO: <epoch: 76, iter:  57,000> l_pix: 1.4314e-01 
+23-03-03 21:26:27.144 - INFO: <epoch: 77, iter:  57,200> l_pix: 1.4757e-01 
+23-03-03 21:28:38.143 - INFO: <epoch: 77, iter:  57,400> l_pix: 1.4454e-01 
+23-03-03 21:30:51.367 - INFO: <epoch: 77, iter:  57,600> l_pix: 4.3919e-01 
+23-03-03 21:33:06.034 - INFO: <epoch: 78, iter:  57,800> l_pix: 1.4050e-01 
+23-03-03 21:35:19.846 - INFO: <epoch: 78, iter:  58,000> l_pix: 1.3777e-01 
+23-03-03 21:37:33.192 - INFO: <epoch: 78, iter:  58,200> l_pix: 1.3968e-01 
+23-03-03 21:39:46.811 - INFO: <epoch: 78, iter:  58,400> l_pix: 1.5115e-01 
+23-03-03 21:42:01.467 - INFO: <epoch: 79, iter:  58,600> l_pix: 1.4122e-01 
+23-03-03 21:44:14.871 - INFO: <epoch: 79, iter:  58,800> l_pix: 1.4327e-01 
+23-03-03 21:46:28.494 - INFO: <epoch: 79, iter:  59,000> l_pix: 1.3986e-01 
+23-03-03 21:48:42.347 - INFO: <epoch: 79, iter:  59,200> l_pix: 1.6603e-01 
+23-03-03 21:50:44.496 - INFO: <epoch: 80, iter:  59,400> l_pix: 1.3969e-01 
+23-03-03 21:52:44.484 - INFO: <epoch: 80, iter:  59,600> l_pix: 1.3745e-01 
+23-03-03 21:54:44.641 - INFO: <epoch: 80, iter:  59,800> l_pix: 1.4599e-01 
+23-03-03 21:56:44.824 - INFO: <epoch: 80, iter:  60,000> l_pix: 1.3836e-01 
+23-03-03 22:05:11.259 - INFO: # Validation # PSNR: 9.9292e+00
+23-03-03 22:05:11.260 - INFO: <epoch: 80, iter:  60,000> psnr: 9.9292e+00
+23-03-03 22:05:11.260 - INFO: Saving models and training states.
+23-03-03 22:05:12.767 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I60000_E80_gen.pth] ...
+23-03-03 22:07:13.273 - INFO: <epoch: 81, iter:  60,200> l_pix: 2.5799e-01 
+23-03-03 22:09:13.231 - INFO: <epoch: 81, iter:  60,400> l_pix: 1.5837e-01 
+23-03-03 22:11:13.291 - INFO: <epoch: 81, iter:  60,600> l_pix: 1.3541e-01 
+23-03-03 22:13:13.756 - INFO: <epoch: 82, iter:  60,800> l_pix: 1.4763e-01 
+23-03-03 22:15:13.702 - INFO: <epoch: 82, iter:  61,000> l_pix: 1.6778e-01 
+23-03-03 22:17:13.910 - INFO: <epoch: 82, iter:  61,200> l_pix: 1.5003e-01 
+23-03-03 22:19:13.949 - INFO: <epoch: 82, iter:  61,400> l_pix: 1.3502e-01 
+23-03-03 22:21:14.482 - INFO: <epoch: 83, iter:  61,600> l_pix: 1.3759e-01 
+23-03-03 22:23:15.098 - INFO: <epoch: 83, iter:  61,800> l_pix: 1.3431e-01 
+23-03-03 22:26:56.866 - INFO: <epoch: 83, iter:  62,000> l_pix: 1.3417e-01 
+23-03-03 22:30:46.317 - INFO: <epoch: 83, iter:  62,200> l_pix: 1.8296e-01 
+23-03-03 22:34:34.515 - INFO: <epoch: 84, iter:  62,400> l_pix: 1.3456e-01 
+23-03-03 22:38:22.178 - INFO: <epoch: 84, iter:  62,600> l_pix: 1.3191e-01 
+23-03-03 22:42:07.690 - INFO: <epoch: 84, iter:  62,800> l_pix: 1.3490e-01 
+23-03-03 22:45:56.126 - INFO: <epoch: 84, iter:  63,000> l_pix: 1.3169e-01 
+23-03-03 22:49:46.080 - INFO: <epoch: 85, iter:  63,200> l_pix: 1.3487e-01 
+23-03-03 22:53:34.850 - INFO: <epoch: 85, iter:  63,400> l_pix: 1.3152e-01 
+23-03-03 22:57:23.357 - INFO: <epoch: 85, iter:  63,600> l_pix: 1.4255e-01 
+23-03-03 23:01:13.536 - INFO: <epoch: 86, iter:  63,800> l_pix: 1.3241e-01 
+23-03-03 23:03:30.986 - INFO: <epoch: 86, iter:  64,000> l_pix: 1.3531e-01 
+23-03-03 23:05:29.897 - INFO: <epoch: 86, iter:  64,200> l_pix: 1.3273e-01 
+23-03-03 23:07:29.725 - INFO: <epoch: 86, iter:  64,400> l_pix: 1.3017e-01 
+23-03-03 23:09:30.738 - INFO: <epoch: 87, iter:  64,600> l_pix: 1.4919e-01 
+23-03-03 23:11:30.862 - INFO: <epoch: 87, iter:  64,800> l_pix: 4.4640e-01 
+23-03-03 23:13:31.016 - INFO: <epoch: 87, iter:  65,000> l_pix: 1.4188e-01 
+23-03-03 23:22:01.030 - INFO: # Validation # PSNR: 9.8631e+00
+23-03-03 23:22:01.031 - INFO: <epoch: 87, iter:  65,000> psnr: 9.8631e+00
+23-03-03 23:24:01.161 - INFO: <epoch: 87, iter:  65,200> l_pix: 1.3277e-01 
+23-03-03 23:26:01.318 - INFO: <epoch: 88, iter:  65,400> l_pix: 1.5230e-01 
+23-03-03 23:28:00.863 - INFO: <epoch: 88, iter:  65,600> l_pix: 1.4733e-01 
+23-03-03 23:30:00.674 - INFO: <epoch: 88, iter:  65,800> l_pix: 1.3519e-01 
+23-03-03 23:32:00.405 - INFO: <epoch: 88, iter:  66,000> l_pix: 1.3050e-01 
+23-03-03 23:34:00.717 - INFO: <epoch: 89, iter:  66,200> l_pix: 1.3072e-01 
+23-03-03 23:36:00.470 - INFO: <epoch: 89, iter:  66,400> l_pix: 1.2961e-01 
+23-03-03 23:38:00.584 - INFO: <epoch: 89, iter:  66,600> l_pix: 2.6081e-01 
+23-03-03 23:40:01.288 - INFO: <epoch: 90, iter:  66,800> l_pix: 4.2497e-01 
+23-03-03 23:42:00.992 - INFO: <epoch: 90, iter:  67,000> l_pix: 1.3008e-01 
+23-03-03 23:44:00.887 - INFO: <epoch: 90, iter:  67,200> l_pix: 1.4538e-01 
+23-03-03 23:46:00.888 - INFO: <epoch: 90, iter:  67,400> l_pix: 1.2838e-01 
+23-03-03 23:48:01.445 - INFO: <epoch: 91, iter:  67,600> l_pix: 1.7720e-01 
+23-03-03 23:50:01.241 - INFO: <epoch: 91, iter:  67,800> l_pix: 1.2720e-01 
+23-03-03 23:52:01.244 - INFO: <epoch: 91, iter:  68,000> l_pix: 1.2731e-01 
+23-03-03 23:54:01.192 - INFO: <epoch: 91, iter:  68,200> l_pix: 1.2666e-01 
+23-03-03 23:56:01.530 - INFO: <epoch: 92, iter:  68,400> l_pix: 1.2553e-01 
+23-03-03 23:58:01.221 - INFO: <epoch: 92, iter:  68,600> l_pix: 1.4614e-01 
+23-03-04 00:00:01.212 - INFO: <epoch: 92, iter:  68,800> l_pix: 1.2663e-01 
+23-03-04 00:02:00.903 - INFO: <epoch: 92, iter:  69,000> l_pix: 1.2753e-01 
+23-03-04 00:04:01.396 - INFO: <epoch: 93, iter:  69,200> l_pix: 1.2770e-01 
+23-03-04 00:06:01.291 - INFO: <epoch: 93, iter:  69,400> l_pix: 1.3625e-01 
+23-03-04 00:08:01.213 - INFO: <epoch: 93, iter:  69,600> l_pix: 1.5194e-01 
+23-03-04 00:10:01.513 - INFO: <epoch: 94, iter:  69,800> l_pix: 2.3382e-01 
+23-03-04 00:12:01.215 - INFO: <epoch: 94, iter:  70,000> l_pix: 1.2480e-01 
+23-03-04 00:20:27.571 - INFO: # Validation # PSNR: 9.5171e+00
+23-03-04 00:20:27.571 - INFO: <epoch: 94, iter:  70,000> psnr: 9.5171e+00
+23-03-04 00:20:27.572 - INFO: Saving models and training states.
+23-03-04 00:20:29.075 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I70000_E94_gen.pth] ...
+23-03-04 00:22:29.105 - INFO: <epoch: 94, iter:  70,200> l_pix: 1.6246e-01 
+23-03-04 00:24:28.550 - INFO: <epoch: 94, iter:  70,400> l_pix: 1.2936e-01 
+23-03-04 00:26:28.972 - INFO: <epoch: 95, iter:  70,600> l_pix: 1.2668e-01 
+23-03-04 00:28:28.858 - INFO: <epoch: 95, iter:  70,800> l_pix: 1.2528e-01 
+23-03-04 00:30:28.641 - INFO: <epoch: 95, iter:  71,000> l_pix: 1.2759e-01 
+23-03-04 00:32:28.186 - INFO: <epoch: 95, iter:  71,200> l_pix: 1.5152e-01 
+23-03-04 00:34:28.646 - INFO: <epoch: 96, iter:  71,400> l_pix: 1.4014e-01 
+23-03-04 00:36:28.703 - INFO: <epoch: 96, iter:  71,600> l_pix: 1.2022e-01 
+23-03-04 00:38:28.436 - INFO: <epoch: 96, iter:  71,800> l_pix: 1.5958e-01 
+23-03-04 00:40:27.989 - INFO: <epoch: 96, iter:  72,000> l_pix: 1.2945e-01 
+23-03-04 00:42:28.534 - INFO: <epoch: 97, iter:  72,200> l_pix: 1.2491e-01 
+23-03-04 00:44:28.602 - INFO: <epoch: 97, iter:  72,400> l_pix: 4.6620e-01 
+23-03-04 00:46:28.267 - INFO: <epoch: 97, iter:  72,600> l_pix: 1.2690e-01 
+23-03-04 00:48:28.829 - INFO: <epoch: 98, iter:  72,800> l_pix: 1.2140e-01 
+23-03-04 00:50:28.815 - INFO: <epoch: 98, iter:  73,000> l_pix: 1.2309e-01 
+23-03-04 00:52:28.738 - INFO: <epoch: 98, iter:  73,200> l_pix: 1.3109e-01 
+23-03-04 00:54:28.262 - INFO: <epoch: 98, iter:  73,400> l_pix: 1.2135e-01 
+23-03-04 00:56:28.747 - INFO: <epoch: 99, iter:  73,600> l_pix: 1.2266e-01 
+23-03-04 00:58:28.777 - INFO: <epoch: 99, iter:  73,800> l_pix: 1.2230e-01 
+23-03-04 01:00:28.475 - INFO: <epoch: 99, iter:  74,000> l_pix: 1.7465e-01 
+23-03-04 01:02:27.929 - INFO: <epoch: 99, iter:  74,200> l_pix: 1.2522e-01 
+23-03-04 01:04:28.284 - INFO: <epoch:100, iter:  74,400> l_pix: 1.2147e-01 
+23-03-04 01:06:28.253 - INFO: <epoch:100, iter:  74,600> l_pix: 1.2316e-01 
+23-03-04 01:08:27.737 - INFO: <epoch:100, iter:  74,800> l_pix: 1.1827e-01 
+23-03-04 01:10:27.103 - INFO: <epoch:100, iter:  75,000> l_pix: 1.2113e-01 
+23-03-04 01:18:53.204 - INFO: # Validation # PSNR: 9.8635e+00
+23-03-04 01:18:53.205 - INFO: <epoch:100, iter:  75,000> psnr: 9.8635e+00
+23-03-04 01:20:53.813 - INFO: <epoch:101, iter:  75,200> l_pix: 1.2132e-01 
+23-03-04 01:22:53.107 - INFO: <epoch:101, iter:  75,400> l_pix: 1.2568e-01 
+23-03-04 01:24:52.520 - INFO: <epoch:101, iter:  75,600> l_pix: 1.2063e-01 
+23-03-04 01:26:52.975 - INFO: <epoch:102, iter:  75,800> l_pix: 1.2202e-01 
+23-03-04 01:28:52.753 - INFO: <epoch:102, iter:  76,000> l_pix: 1.4818e-01 
+23-03-04 01:30:52.283 - INFO: <epoch:102, iter:  76,200> l_pix: 1.1808e-01 
+23-03-04 01:32:51.915 - INFO: <epoch:102, iter:  76,400> l_pix: 1.2592e-01 
+23-03-04 01:34:52.637 - INFO: <epoch:103, iter:  76,600> l_pix: 1.1936e-01 
+23-03-04 01:36:52.337 - INFO: <epoch:103, iter:  76,800> l_pix: 1.2029e-01 
+23-03-04 01:38:51.845 - INFO: <epoch:103, iter:  77,000> l_pix: 1.6112e-01 
+23-03-04 01:40:51.653 - INFO: <epoch:103, iter:  77,200> l_pix: 1.2077e-01 
+23-03-04 01:42:52.228 - INFO: <epoch:104, iter:  77,400> l_pix: 1.2085e-01 
+23-03-04 01:44:51.766 - INFO: <epoch:104, iter:  77,600> l_pix: 1.1813e-01 
+23-03-04 01:46:51.392 - INFO: <epoch:104, iter:  77,800> l_pix: 3.0898e-01 
+23-03-04 01:48:51.170 - INFO: <epoch:104, iter:  78,000> l_pix: 1.1805e-01 
+23-03-04 01:50:51.991 - INFO: <epoch:105, iter:  78,200> l_pix: 1.4429e-01 
+23-03-04 01:52:51.570 - INFO: <epoch:105, iter:  78,400> l_pix: 1.9490e-01 
+23-03-04 01:54:51.210 - INFO: <epoch:105, iter:  78,600> l_pix: 1.1609e-01 
+23-03-04 01:56:51.834 - INFO: <epoch:106, iter:  78,800> l_pix: 1.4185e-01 
+23-03-04 01:58:51.518 - INFO: <epoch:106, iter:  79,000> l_pix: 1.1581e-01 
+23-03-04 02:00:51.063 - INFO: <epoch:106, iter:  79,200> l_pix: 1.2268e-01 
+23-03-04 02:02:50.847 - INFO: <epoch:106, iter:  79,400> l_pix: 1.2911e-01 
+23-03-04 02:04:51.486 - INFO: <epoch:107, iter:  79,600> l_pix: 2.9682e-01 
+23-03-04 02:06:51.054 - INFO: <epoch:107, iter:  79,800> l_pix: 2.6841e-01 
+23-03-04 02:08:50.684 - INFO: <epoch:107, iter:  80,000> l_pix: 1.3542e-01 
+23-03-04 02:17:16.841 - INFO: # Validation # PSNR: 9.9194e+00
+23-03-04 02:17:16.842 - INFO: <epoch:107, iter:  80,000> psnr: 9.9194e+00
+23-03-04 02:17:16.842 - INFO: Saving models and training states.
+23-03-04 02:17:18.334 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I80000_E107_gen.pth] ...
+23-03-04 02:19:18.260 - INFO: <epoch:107, iter:  80,200> l_pix: 1.1531e-01 
+23-03-04 02:21:18.427 - INFO: <epoch:108, iter:  80,400> l_pix: 1.1430e-01 
+23-03-04 02:23:18.147 - INFO: <epoch:108, iter:  80,600> l_pix: 1.1681e-01 
+23-03-04 02:25:18.201 - INFO: <epoch:108, iter:  80,800> l_pix: 1.1615e-01 
+23-03-04 02:27:18.198 - INFO: <epoch:108, iter:  81,000> l_pix: 1.1767e-01 
+23-03-04 02:29:18.422 - INFO: <epoch:109, iter:  81,200> l_pix: 1.1471e-01 
+23-03-04 02:31:18.049 - INFO: <epoch:109, iter:  81,400> l_pix: 1.1798e-01 
+23-03-04 02:33:17.973 - INFO: <epoch:109, iter:  81,600> l_pix: 1.1348e-01 
+23-03-04 02:35:18.458 - INFO: <epoch:110, iter:  81,800> l_pix: 1.1643e-01 
+23-03-04 02:37:18.079 - INFO: <epoch:110, iter:  82,000> l_pix: 1.8825e-01 
+23-03-04 02:39:17.835 - INFO: <epoch:110, iter:  82,200> l_pix: 1.2082e-01 
+23-03-04 02:41:17.721 - INFO: <epoch:110, iter:  82,400> l_pix: 1.1723e-01 
+23-03-04 02:43:18.014 - INFO: <epoch:111, iter:  82,600> l_pix: 1.1438e-01 
+23-03-04 02:45:17.805 - INFO: <epoch:111, iter:  82,800> l_pix: 1.1575e-01 
+23-03-04 02:47:17.981 - INFO: <epoch:111, iter:  83,000> l_pix: 1.1745e-01 
+23-03-04 02:49:17.867 - INFO: <epoch:111, iter:  83,200> l_pix: 1.1139e-01 
+23-03-04 02:51:18.185 - INFO: <epoch:112, iter:  83,400> l_pix: 1.1527e-01 
+23-03-04 02:53:17.890 - INFO: <epoch:112, iter:  83,600> l_pix: 1.3527e-01 
+23-03-04 02:55:18.033 - INFO: <epoch:112, iter:  83,800> l_pix: 1.1525e-01 
+23-03-04 02:57:17.846 - INFO: <epoch:112, iter:  84,000> l_pix: 1.1459e-01 
+23-03-04 02:59:18.213 - INFO: <epoch:113, iter:  84,200> l_pix: 1.1426e-01 
+23-03-04 03:01:18.052 - INFO: <epoch:113, iter:  84,400> l_pix: 1.1420e-01 
+23-03-04 03:03:17.925 - INFO: <epoch:113, iter:  84,600> l_pix: 1.2572e-01 
+23-03-04 03:05:18.332 - INFO: <epoch:114, iter:  84,800> l_pix: 1.1190e-01 
+23-03-04 03:07:18.165 - INFO: <epoch:114, iter:  85,000> l_pix: 1.1100e-01 
+23-03-04 03:15:44.344 - INFO: # Validation # PSNR: 1.0479e+01
+23-03-04 03:15:44.345 - INFO: <epoch:114, iter:  85,000> psnr: 1.0479e+01
+23-03-04 03:17:44.437 - INFO: <epoch:114, iter:  85,200> l_pix: 1.2015e-01 
+23-03-04 03:19:44.104 - INFO: <epoch:114, iter:  85,400> l_pix: 1.1518e-01 
+23-03-04 03:21:44.579 - INFO: <epoch:115, iter:  85,600> l_pix: 1.1183e-01 
+23-03-04 03:23:44.647 - INFO: <epoch:115, iter:  85,800> l_pix: 1.1473e-01 
+23-03-04 03:25:44.474 - INFO: <epoch:115, iter:  86,000> l_pix: 1.1262e-01 
+23-03-04 03:27:44.055 - INFO: <epoch:115, iter:  86,200> l_pix: 1.3079e-01 
+23-03-04 03:29:44.691 - INFO: <epoch:116, iter:  86,400> l_pix: 1.1052e-01 
+23-03-04 03:31:44.812 - INFO: <epoch:116, iter:  86,600> l_pix: 1.1258e-01 
+23-03-04 03:33:44.515 - INFO: <epoch:116, iter:  86,800> l_pix: 1.1065e-01 
+23-03-04 03:35:44.182 - INFO: <epoch:116, iter:  87,000> l_pix: 1.2761e-01 
+23-03-04 03:37:44.938 - INFO: <epoch:117, iter:  87,200> l_pix: 1.2166e-01 
+23-03-04 03:39:44.981 - INFO: <epoch:117, iter:  87,400> l_pix: 1.1494e-01 
+23-03-04 03:41:44.659 - INFO: <epoch:117, iter:  87,600> l_pix: 1.1581e-01 
+23-03-04 03:43:45.359 - INFO: <epoch:118, iter:  87,800> l_pix: 1.7637e-01 
+23-03-04 03:45:45.430 - INFO: <epoch:118, iter:  88,000> l_pix: 1.1217e-01 
+23-03-04 03:47:45.354 - INFO: <epoch:118, iter:  88,200> l_pix: 1.1289e-01 
+23-03-04 03:49:45.104 - INFO: <epoch:118, iter:  88,400> l_pix: 1.1055e-01 
+23-03-04 03:51:45.983 - INFO: <epoch:119, iter:  88,600> l_pix: 1.0962e-01 
+23-03-04 03:53:46.176 - INFO: <epoch:119, iter:  88,800> l_pix: 1.4617e-01 
+23-03-04 03:55:45.976 - INFO: <epoch:119, iter:  89,000> l_pix: 1.0919e-01 
+23-03-04 03:57:45.774 - INFO: <epoch:119, iter:  89,200> l_pix: 1.0978e-01 
+23-03-04 03:59:46.481 - INFO: <epoch:120, iter:  89,400> l_pix: 1.0974e-01 
+23-03-04 04:01:46.499 - INFO: <epoch:120, iter:  89,600> l_pix: 1.6256e-01 
+23-03-04 04:03:46.331 - INFO: <epoch:120, iter:  89,800> l_pix: 1.4002e-01 
+23-03-04 04:05:46.197 - INFO: <epoch:120, iter:  90,000> l_pix: 1.0727e-01 
+23-03-04 04:14:12.706 - INFO: # Validation # PSNR: 9.8303e+00
+23-03-04 04:14:12.706 - INFO: <epoch:120, iter:  90,000> psnr: 9.8303e+00
+23-03-04 04:14:12.707 - INFO: Saving models and training states.
+23-03-04 04:14:14.174 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I90000_E120_gen.pth] ...
+23-03-04 04:16:14.989 - INFO: <epoch:121, iter:  90,200> l_pix: 1.1585e-01 
+23-03-04 04:18:14.598 - INFO: <epoch:121, iter:  90,400> l_pix: 1.1022e-01 
+23-03-04 04:20:14.348 - INFO: <epoch:121, iter:  90,600> l_pix: 1.0772e-01 
+23-03-04 04:22:15.262 - INFO: <epoch:122, iter:  90,800> l_pix: 1.3651e-01 
+23-03-04 04:24:15.046 - INFO: <epoch:122, iter:  91,000> l_pix: 1.9204e-01 
+23-03-04 04:26:14.711 - INFO: <epoch:122, iter:  91,200> l_pix: 1.0668e-01 
+23-03-04 04:28:14.635 - INFO: <epoch:122, iter:  91,400> l_pix: 1.1181e-01 
+23-03-04 04:30:15.364 - INFO: <epoch:123, iter:  91,600> l_pix: 1.0654e-01 
+23-03-04 04:32:14.957 - INFO: <epoch:123, iter:  91,800> l_pix: 1.1029e-01 
+23-03-04 04:34:14.654 - INFO: <epoch:123, iter:  92,000> l_pix: 1.0940e-01 
+23-03-04 04:36:14.751 - INFO: <epoch:123, iter:  92,200> l_pix: 1.0654e-01 
+23-03-04 04:38:15.534 - INFO: <epoch:124, iter:  92,400> l_pix: 1.2381e-01 
+23-03-04 04:40:15.182 - INFO: <epoch:124, iter:  92,600> l_pix: 1.1625e-01 
+23-03-04 04:42:15.052 - INFO: <epoch:124, iter:  92,800> l_pix: 1.0734e-01 
+23-03-04 04:44:15.184 - INFO: <epoch:124, iter:  93,000> l_pix: 1.0882e-01 
+23-03-04 04:46:15.627 - INFO: <epoch:125, iter:  93,200> l_pix: 2.0249e-01 
+23-03-04 04:48:15.184 - INFO: <epoch:125, iter:  93,400> l_pix: 3.2659e-01 
+23-03-04 04:50:14.922 - INFO: <epoch:125, iter:  93,600> l_pix: 1.1158e-01 
+23-03-04 04:52:15.670 - INFO: <epoch:126, iter:  93,800> l_pix: 1.1342e-01 
+23-03-04 04:54:15.585 - INFO: <epoch:126, iter:  94,000> l_pix: 1.1969e-01 
+23-03-04 04:56:15.550 - INFO: <epoch:126, iter:  94,200> l_pix: 1.0728e-01 
+23-03-04 04:58:15.692 - INFO: <epoch:126, iter:  94,400> l_pix: 1.0710e-01 
+23-03-04 05:00:16.578 - INFO: <epoch:127, iter:  94,600> l_pix: 1.8175e-01 
+23-03-04 05:02:16.336 - INFO: <epoch:127, iter:  94,800> l_pix: 1.0536e-01 
+23-03-04 05:04:16.311 - INFO: <epoch:127, iter:  95,000> l_pix: 1.0327e-01 
+23-03-04 05:12:43.540 - INFO: # Validation # PSNR: 9.7115e+00
+23-03-04 05:12:43.541 - INFO: <epoch:127, iter:  95,000> psnr: 9.7115e+00
+23-03-04 05:14:43.639 - INFO: <epoch:127, iter:  95,200> l_pix: 1.1011e-01 
+23-03-04 05:16:44.063 - INFO: <epoch:128, iter:  95,400> l_pix: 1.0524e-01 
+23-03-04 05:18:43.803 - INFO: <epoch:128, iter:  95,600> l_pix: 1.0479e-01 
+23-03-04 05:20:43.925 - INFO: <epoch:128, iter:  95,800> l_pix: 3.0041e-01 
+23-03-04 05:22:43.994 - INFO: <epoch:128, iter:  96,000> l_pix: 1.0748e-01 
+23-03-04 05:24:44.602 - INFO: <epoch:129, iter:  96,200> l_pix: 1.0358e-01 
+23-03-04 05:26:44.840 - INFO: <epoch:129, iter:  96,400> l_pix: 1.0268e-01 
+23-03-04 05:28:45.103 - INFO: <epoch:129, iter:  96,600> l_pix: 1.0362e-01 
+23-03-04 05:30:46.564 - INFO: <epoch:130, iter:  96,800> l_pix: 1.0243e-01 
+23-03-04 05:32:55.850 - INFO: <epoch:130, iter:  97,000> l_pix: 1.0312e-01 
+23-03-04 05:35:05.590 - INFO: <epoch:130, iter:  97,200> l_pix: 1.1763e-01 
+23-03-04 05:37:15.276 - INFO: <epoch:130, iter:  97,400> l_pix: 1.1454e-01 
+23-03-04 05:39:25.306 - INFO: <epoch:131, iter:  97,600> l_pix: 1.0361e-01 
+23-03-04 05:41:25.464 - INFO: <epoch:131, iter:  97,800> l_pix: 1.0306e-01 
+23-03-04 05:43:25.919 - INFO: <epoch:131, iter:  98,000> l_pix: 1.1058e-01 
+23-03-04 05:45:25.864 - INFO: <epoch:131, iter:  98,200> l_pix: 1.0468e-01 
+23-03-04 05:47:26.540 - INFO: <epoch:132, iter:  98,400> l_pix: 1.0521e-01 
+23-03-04 05:49:26.703 - INFO: <epoch:132, iter:  98,600> l_pix: 1.0473e-01 
+23-03-04 05:51:26.924 - INFO: <epoch:132, iter:  98,800> l_pix: 1.0502e-01 
+23-03-04 05:53:31.469 - INFO: <epoch:132, iter:  99,000> l_pix: 1.2418e-01 
+23-03-04 05:55:39.436 - INFO: <epoch:133, iter:  99,200> l_pix: 1.0298e-01 
+23-03-04 05:57:49.358 - INFO: <epoch:133, iter:  99,400> l_pix: 1.0144e-01 
+23-03-04 05:59:59.278 - INFO: <epoch:133, iter:  99,600> l_pix: 1.1071e-01 
+23-03-04 06:02:09.827 - INFO: <epoch:134, iter:  99,800> l_pix: 1.0068e-01 
+23-03-04 06:04:19.568 - INFO: <epoch:134, iter: 100,000> l_pix: 1.0508e-01 
+23-03-04 06:12:47.094 - INFO: # Validation # PSNR: 9.8431e+00
+23-03-04 06:12:47.095 - INFO: <epoch:134, iter: 100,000> psnr: 9.8431e+00
+23-03-04 06:12:47.096 - INFO: Saving models and training states.
+23-03-04 06:12:48.640 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I100000_E134_gen.pth] ...
+23-03-04 06:14:48.173 - INFO: <epoch:134, iter: 100,200> l_pix: 2.0062e-01 
+23-03-04 06:16:47.431 - INFO: <epoch:134, iter: 100,400> l_pix: 1.1090e-01 
+23-03-04 06:18:47.915 - INFO: <epoch:135, iter: 100,600> l_pix: 1.0647e-01 
+23-03-04 06:20:47.632 - INFO: <epoch:135, iter: 100,800> l_pix: 1.0173e-01 
+23-03-04 06:22:47.145 - INFO: <epoch:135, iter: 101,000> l_pix: 3.5649e-01 
+23-03-04 06:24:46.859 - INFO: <epoch:135, iter: 101,200> l_pix: 1.1132e-01 
+23-03-04 06:26:47.538 - INFO: <epoch:136, iter: 101,400> l_pix: 1.3608e-01 
+23-03-04 06:28:47.229 - INFO: <epoch:136, iter: 101,600> l_pix: 1.1486e-01 
+23-03-04 06:30:46.991 - INFO: <epoch:136, iter: 101,800> l_pix: 1.0112e-01 
+23-03-04 06:32:46.781 - INFO: <epoch:136, iter: 102,000> l_pix: 1.0433e-01 
+23-03-04 06:34:47.462 - INFO: <epoch:137, iter: 102,200> l_pix: 9.9771e-02 
+23-03-04 06:36:47.050 - INFO: <epoch:137, iter: 102,400> l_pix: 1.1171e-01 
+23-03-04 06:38:46.797 - INFO: <epoch:137, iter: 102,600> l_pix: 1.0114e-01 
+23-03-04 06:40:47.507 - INFO: <epoch:138, iter: 102,800> l_pix: 1.0063e-01 
+23-03-04 06:42:47.333 - INFO: <epoch:138, iter: 103,000> l_pix: 1.0158e-01 
+23-03-04 06:44:46.822 - INFO: <epoch:138, iter: 103,200> l_pix: 1.0259e-01 
+23-03-04 06:46:46.492 - INFO: <epoch:138, iter: 103,400> l_pix: 1.0182e-01 
+23-03-04 06:48:47.455 - INFO: <epoch:139, iter: 103,600> l_pix: 1.0943e-01 
+23-03-04 06:50:47.413 - INFO: <epoch:139, iter: 103,800> l_pix: 1.0251e-01 
+23-03-04 06:52:47.137 - INFO: <epoch:139, iter: 104,000> l_pix: 1.4078e-01 
+23-03-04 06:54:46.874 - INFO: <epoch:139, iter: 104,200> l_pix: 1.2223e-01 
+23-03-04 06:56:47.546 - INFO: <epoch:140, iter: 104,400> l_pix: 1.0232e-01 
+23-03-04 06:58:47.148 - INFO: <epoch:140, iter: 104,600> l_pix: 1.3474e-01 
+23-03-04 07:00:46.874 - INFO: <epoch:140, iter: 104,800> l_pix: 1.0202e-01 
+23-03-04 07:02:46.815 - INFO: <epoch:140, iter: 105,000> l_pix: 9.8585e-02 
+23-03-04 07:11:13.540 - INFO: # Validation # PSNR: 1.0377e+01
+23-03-04 07:11:13.541 - INFO: <epoch:140, iter: 105,000> psnr: 1.0377e+01
+23-03-04 07:13:13.969 - INFO: <epoch:141, iter: 105,200> l_pix: 1.0022e-01 
+23-03-04 07:15:13.432 - INFO: <epoch:141, iter: 105,400> l_pix: 1.0258e-01 
+23-03-04 07:17:13.282 - INFO: <epoch:141, iter: 105,600> l_pix: 9.9851e-02 
+23-03-04 07:19:14.124 - INFO: <epoch:142, iter: 105,800> l_pix: 1.0066e-01 
+23-03-04 07:21:13.847 - INFO: <epoch:142, iter: 106,000> l_pix: 1.0120e-01 
+23-03-04 07:23:13.611 - INFO: <epoch:142, iter: 106,200> l_pix: 3.6648e-01 
+23-03-04 07:25:13.604 - INFO: <epoch:142, iter: 106,400> l_pix: 1.0010e-01 
+23-03-04 07:27:14.501 - INFO: <epoch:143, iter: 106,600> l_pix: 1.1106e-01 
+23-03-04 07:29:14.296 - INFO: <epoch:143, iter: 106,800> l_pix: 1.0178e-01 
+23-03-04 07:31:14.129 - INFO: <epoch:143, iter: 107,000> l_pix: 1.8255e-01 
+23-03-04 07:33:14.101 - INFO: <epoch:143, iter: 107,200> l_pix: 1.3541e-01 
+23-03-04 07:35:14.440 - INFO: <epoch:144, iter: 107,400> l_pix: 9.6488e-02 
+23-03-04 07:37:14.153 - INFO: <epoch:144, iter: 107,600> l_pix: 9.9211e-02 
+23-03-04 07:39:14.152 - INFO: <epoch:144, iter: 107,800> l_pix: 1.1307e-01 
+23-03-04 07:41:14.085 - INFO: <epoch:144, iter: 108,000> l_pix: 1.1639e-01 
+23-03-04 07:43:14.463 - INFO: <epoch:145, iter: 108,200> l_pix: 9.8762e-02 
+23-03-04 07:45:14.117 - INFO: <epoch:145, iter: 108,400> l_pix: 9.9257e-02 
+23-03-04 07:47:14.109 - INFO: <epoch:145, iter: 108,600> l_pix: 9.8667e-02 
+23-03-04 07:49:14.794 - INFO: <epoch:146, iter: 108,800> l_pix: 9.9618e-02 
+23-03-04 07:51:14.632 - INFO: <epoch:146, iter: 109,000> l_pix: 1.2459e-01 
+23-03-04 07:53:14.642 - INFO: <epoch:146, iter: 109,200> l_pix: 9.7348e-02 
+23-03-04 07:55:14.688 - INFO: <epoch:146, iter: 109,400> l_pix: 1.5825e-01 
+23-03-04 07:57:15.267 - INFO: <epoch:147, iter: 109,600> l_pix: 1.6973e-01 
+23-03-04 07:59:15.040 - INFO: <epoch:147, iter: 109,800> l_pix: 9.9073e-02 
+23-03-04 08:01:15.225 - INFO: <epoch:147, iter: 110,000> l_pix: 1.0184e-01 
+23-03-04 08:09:42.451 - INFO: # Validation # PSNR: 1.0081e+01
+23-03-04 08:09:42.452 - INFO: <epoch:147, iter: 110,000> psnr: 1.0081e+01
+23-03-04 08:09:42.452 - INFO: Saving models and training states.
+23-03-04 08:09:44.001 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I110000_E147_gen.pth] ...
+23-03-04 08:11:43.698 - INFO: <epoch:147, iter: 110,200> l_pix: 9.9065e-02 
+23-03-04 08:13:43.958 - INFO: <epoch:148, iter: 110,400> l_pix: 9.9463e-02 
+23-03-04 08:15:43.662 - INFO: <epoch:148, iter: 110,600> l_pix: 1.0136e-01 
+23-03-04 08:17:43.658 - INFO: <epoch:148, iter: 110,800> l_pix: 9.8632e-02 
+23-03-04 08:19:43.168 - INFO: <epoch:148, iter: 111,000> l_pix: 1.0645e-01 
+23-03-04 08:21:43.574 - INFO: <epoch:149, iter: 111,200> l_pix: 9.9311e-02 
+23-03-04 08:23:43.565 - INFO: <epoch:149, iter: 111,400> l_pix: 9.7713e-02 
+23-03-04 08:25:43.576 - INFO: <epoch:149, iter: 111,600> l_pix: 1.8395e-01 
+23-03-04 08:27:43.945 - INFO: <epoch:150, iter: 111,800> l_pix: 1.0095e-01 
+23-03-04 08:29:43.700 - INFO: <epoch:150, iter: 112,000> l_pix: 1.1219e-01 
+23-03-04 08:31:43.715 - INFO: <epoch:150, iter: 112,200> l_pix: 9.9023e-02 
+23-03-04 08:33:43.628 - INFO: <epoch:150, iter: 112,400> l_pix: 9.6336e-02 
+23-03-04 08:35:44.126 - INFO: <epoch:151, iter: 112,600> l_pix: 1.0433e-01 
+23-03-04 08:37:43.918 - INFO: <epoch:151, iter: 112,800> l_pix: 1.2395e-01 
+23-03-04 08:39:43.954 - INFO: <epoch:151, iter: 113,000> l_pix: 9.8693e-02 
+23-03-04 08:41:43.691 - INFO: <epoch:151, iter: 113,200> l_pix: 1.0959e-01 
+23-03-04 08:43:44.045 - INFO: <epoch:152, iter: 113,400> l_pix: 9.8294e-02 
+23-03-04 08:45:43.939 - INFO: <epoch:152, iter: 113,600> l_pix: 9.5975e-02 
+23-03-04 08:47:43.985 - INFO: <epoch:152, iter: 113,800> l_pix: 9.5160e-02 
+23-03-04 08:49:43.604 - INFO: <epoch:152, iter: 114,000> l_pix: 9.5076e-02 
+23-03-04 08:51:44.071 - INFO: <epoch:153, iter: 114,200> l_pix: 9.7294e-02 
+23-03-04 08:53:44.111 - INFO: <epoch:153, iter: 114,400> l_pix: 9.5900e-02 
+23-03-04 08:55:44.124 - INFO: <epoch:153, iter: 114,600> l_pix: 9.7437e-02 
+23-03-04 08:57:44.507 - INFO: <epoch:154, iter: 114,800> l_pix: 1.1513e-01 
+23-03-04 08:59:44.285 - INFO: <epoch:154, iter: 115,000> l_pix: 3.2869e-01 
+23-03-04 09:08:11.010 - INFO: # Validation # PSNR: 1.0070e+01
+23-03-04 09:08:11.011 - INFO: <epoch:154, iter: 115,000> psnr: 1.0070e+01
+23-03-04 09:10:11.166 - INFO: <epoch:154, iter: 115,200> l_pix: 1.4241e-01 
+23-03-04 09:12:10.752 - INFO: <epoch:154, iter: 115,400> l_pix: 9.5732e-02 
+23-03-04 09:14:11.240 - INFO: <epoch:155, iter: 115,600> l_pix: 1.1938e-01 
+23-03-04 09:16:11.266 - INFO: <epoch:155, iter: 115,800> l_pix: 9.6268e-02 
+23-03-04 09:18:11.324 - INFO: <epoch:155, iter: 116,000> l_pix: 3.1445e-01 
+23-03-04 09:20:11.030 - INFO: <epoch:155, iter: 116,200> l_pix: 1.4065e-01 
+23-03-04 09:22:11.666 - INFO: <epoch:156, iter: 116,400> l_pix: 9.7494e-02 
+23-03-04 09:24:11.864 - INFO: <epoch:156, iter: 116,600> l_pix: 1.1662e-01 
+23-03-04 09:26:11.669 - INFO: <epoch:156, iter: 116,800> l_pix: 4.6089e-01 
+23-03-04 09:28:11.123 - INFO: <epoch:156, iter: 117,000> l_pix: 9.6186e-02 
+23-03-04 09:30:11.675 - INFO: <epoch:157, iter: 117,200> l_pix: 9.4312e-02 
+23-03-04 09:32:11.919 - INFO: <epoch:157, iter: 117,400> l_pix: 9.4254e-02 
+23-03-04 09:34:11.766 - INFO: <epoch:157, iter: 117,600> l_pix: 1.0361e-01 
+23-03-04 09:36:12.220 - INFO: <epoch:158, iter: 117,800> l_pix: 1.0036e-01 
+23-03-04 09:38:12.076 - INFO: <epoch:158, iter: 118,000> l_pix: 9.8787e-02 
+23-03-04 09:40:12.155 - INFO: <epoch:158, iter: 118,200> l_pix: 9.2600e-02 
+23-03-04 09:42:11.906 - INFO: <epoch:158, iter: 118,400> l_pix: 9.4653e-02 
+23-03-04 09:44:12.480 - INFO: <epoch:159, iter: 118,600> l_pix: 9.3518e-02 
+23-03-04 09:46:12.385 - INFO: <epoch:159, iter: 118,800> l_pix: 9.5090e-02 
+23-03-04 09:48:12.087 - INFO: <epoch:159, iter: 119,000> l_pix: 1.8893e-01 
+23-03-04 09:50:11.397 - INFO: <epoch:159, iter: 119,200> l_pix: 9.4288e-02 
+23-03-04 09:52:11.938 - INFO: <epoch:160, iter: 119,400> l_pix: 1.1702e-01 
+23-03-04 09:54:12.003 - INFO: <epoch:160, iter: 119,600> l_pix: 1.1695e-01 
+23-03-04 09:56:11.806 - INFO: <epoch:160, iter: 119,800> l_pix: 1.0261e-01 
+23-03-04 09:58:11.254 - INFO: <epoch:160, iter: 120,000> l_pix: 9.2942e-02 
+23-03-04 10:06:37.397 - INFO: # Validation # PSNR: 9.5113e+00
+23-03-04 10:06:37.398 - INFO: <epoch:160, iter: 120,000> psnr: 9.5113e+00
+23-03-04 10:06:37.398 - INFO: Saving models and training states.
+23-03-04 10:06:38.959 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I120000_E160_gen.pth] ...
+23-03-04 10:08:39.652 - INFO: <epoch:161, iter: 120,200> l_pix: 9.5763e-02 
+23-03-04 10:10:39.352 - INFO: <epoch:161, iter: 120,400> l_pix: 9.5484e-02 
+23-03-04 10:12:38.743 - INFO: <epoch:161, iter: 120,600> l_pix: 9.2538e-02 
+23-03-04 10:14:39.246 - INFO: <epoch:162, iter: 120,800> l_pix: 9.2706e-02 
+23-03-04 10:16:39.374 - INFO: <epoch:162, iter: 121,000> l_pix: 1.0015e-01 
+23-03-04 10:18:39.221 - INFO: <epoch:162, iter: 121,200> l_pix: 1.1700e-01 
+23-03-04 10:20:38.749 - INFO: <epoch:162, iter: 121,400> l_pix: 9.4218e-02 
+23-03-04 10:22:39.336 - INFO: <epoch:163, iter: 121,600> l_pix: 1.1136e-01 
+23-03-04 10:24:39.444 - INFO: <epoch:163, iter: 121,800> l_pix: 1.0010e-01 
+23-03-04 10:26:39.165 - INFO: <epoch:163, iter: 122,000> l_pix: 1.1774e-01 
+23-03-04 10:28:38.847 - INFO: <epoch:163, iter: 122,200> l_pix: 9.4554e-02 
+23-03-04 10:30:39.506 - INFO: <epoch:164, iter: 122,400> l_pix: 9.2596e-02 
+23-03-04 10:32:39.586 - INFO: <epoch:164, iter: 122,600> l_pix: 9.5688e-02 
+23-03-04 10:34:39.316 - INFO: <epoch:164, iter: 122,800> l_pix: 1.0055e-01 
+23-03-04 10:36:39.052 - INFO: <epoch:164, iter: 123,000> l_pix: 9.2683e-02 
+23-03-04 10:38:39.792 - INFO: <epoch:165, iter: 123,200> l_pix: 1.0527e-01 
+23-03-04 10:40:39.623 - INFO: <epoch:165, iter: 123,400> l_pix: 9.5037e-02 
+23-03-04 10:42:39.189 - INFO: <epoch:165, iter: 123,600> l_pix: 9.8320e-02 
+23-03-04 10:44:39.860 - INFO: <epoch:166, iter: 123,800> l_pix: 1.4217e-01 
+23-03-04 10:46:39.940 - INFO: <epoch:166, iter: 124,000> l_pix: 9.1567e-02 
+23-03-04 10:48:39.745 - INFO: <epoch:166, iter: 124,200> l_pix: 9.1575e-02 
+23-03-04 10:50:39.311 - INFO: <epoch:166, iter: 124,400> l_pix: 9.3827e-02 
+23-03-04 10:52:39.885 - INFO: <epoch:167, iter: 124,600> l_pix: 9.7863e-02 
+23-03-04 10:54:40.021 - INFO: <epoch:167, iter: 124,800> l_pix: 1.1305e-01 
+23-03-04 10:56:39.903 - INFO: <epoch:167, iter: 125,000> l_pix: 1.0978e-01 
+23-03-04 11:05:05.830 - INFO: # Validation # PSNR: 9.7333e+00
+23-03-04 11:05:05.830 - INFO: <epoch:167, iter: 125,000> psnr: 9.7333e+00
+23-03-04 11:07:05.787 - INFO: <epoch:167, iter: 125,200> l_pix: 1.2057e-01 
+23-03-04 11:09:06.333 - INFO: <epoch:168, iter: 125,400> l_pix: 9.9033e-02 
+23-03-04 11:11:06.124 - INFO: <epoch:168, iter: 125,600> l_pix: 1.1348e-01 
+23-03-04 11:13:05.858 - INFO: <epoch:168, iter: 125,800> l_pix: 9.1813e-02 
+23-03-04 11:15:05.837 - INFO: <epoch:168, iter: 126,000> l_pix: 1.0992e-01 
+23-03-04 11:17:06.904 - INFO: <epoch:169, iter: 126,200> l_pix: 8.9479e-02 
+23-03-04 11:19:06.759 - INFO: <epoch:169, iter: 126,400> l_pix: 9.0134e-02 
+23-03-04 11:21:06.539 - INFO: <epoch:169, iter: 126,600> l_pix: 9.1989e-02 
+23-03-04 11:23:07.240 - INFO: <epoch:170, iter: 126,800> l_pix: 9.6566e-02 
+23-03-04 11:25:07.344 - INFO: <epoch:170, iter: 127,000> l_pix: 1.0286e-01 
+23-03-04 11:27:07.193 - INFO: <epoch:170, iter: 127,200> l_pix: 1.4023e-01 
+23-03-04 11:29:07.117 - INFO: <epoch:170, iter: 127,400> l_pix: 1.1123e-01 
+23-03-04 11:31:08.167 - INFO: <epoch:171, iter: 127,600> l_pix: 3.0461e-01 
+23-03-04 11:33:08.248 - INFO: <epoch:171, iter: 127,800> l_pix: 1.1017e-01 
+23-03-04 11:35:07.860 - INFO: <epoch:171, iter: 128,000> l_pix: 9.0028e-02 
+23-03-04 11:37:07.803 - INFO: <epoch:171, iter: 128,200> l_pix: 9.1317e-02 
+23-03-04 11:39:08.753 - INFO: <epoch:172, iter: 128,400> l_pix: 1.0907e-01 
+23-03-04 11:41:08.715 - INFO: <epoch:172, iter: 128,600> l_pix: 1.2884e-01 
+23-03-04 11:43:08.466 - INFO: <epoch:172, iter: 128,800> l_pix: 9.0004e-02 
+23-03-04 11:45:08.534 - INFO: <epoch:172, iter: 129,000> l_pix: 8.8920e-02 
+23-03-04 11:47:09.483 - INFO: <epoch:173, iter: 129,200> l_pix: 1.1512e-01 
+23-03-04 11:49:09.457 - INFO: <epoch:173, iter: 129,400> l_pix: 9.2455e-02 
+23-03-04 11:51:09.306 - INFO: <epoch:173, iter: 129,600> l_pix: 9.2631e-02 
+23-03-04 11:53:10.141 - INFO: <epoch:174, iter: 129,800> l_pix: 9.4175e-02 
+23-03-04 11:55:10.270 - INFO: <epoch:174, iter: 130,000> l_pix: 1.2538e-01 
+23-03-04 12:03:36.299 - INFO: # Validation # PSNR: 1.0149e+01
+23-03-04 12:03:36.300 - INFO: <epoch:174, iter: 130,000> psnr: 1.0149e+01
+23-03-04 12:03:36.300 - INFO: Saving models and training states.
+23-03-04 12:03:38.000 - INFO: Saved model in [experiments/sr_ffhq_230303_095424/checkpoint/I130000_E174_gen.pth] ...
+23-03-04 12:05:37.745 - INFO: <epoch:174, iter: 130,200> l_pix: 8.7523e-02 
+23-03-04 12:07:37.572 - INFO: <epoch:174, iter: 130,400> l_pix: 9.6491e-02 
+23-03-04 12:09:38.259 - INFO: <epoch:175, iter: 130,600> l_pix: 8.9265e-02 
+23-03-04 12:11:38.231 - INFO: <epoch:175, iter: 130,800> l_pix: 8.8915e-02 
+23-03-04 12:13:38.155 - INFO: <epoch:175, iter: 131,000> l_pix: 9.3787e-02 
+23-03-04 12:15:38.371 - INFO: <epoch:175, iter: 131,200> l_pix: 9.4854e-02 
+23-03-04 12:17:39.456 - INFO: <epoch:176, iter: 131,400> l_pix: 1.5240e-01 
+23-03-04 12:19:39.293 - INFO: <epoch:176, iter: 131,600> l_pix: 9.2087e-02 
+23-03-04 12:21:39.291 - INFO: <epoch:176, iter: 131,800> l_pix: 1.2393e-01 
+23-03-04 12:23:39.643 - INFO: <epoch:176, iter: 132,000> l_pix: 9.2780e-02 
+23-03-04 12:25:40.410 - INFO: <epoch:177, iter: 132,200> l_pix: 9.1210e-02 
+23-03-04 12:27:40.112 - INFO: <epoch:177, iter: 132,400> l_pix: 8.8787e-02 
+23-03-04 12:29:39.957 - INFO: <epoch:177, iter: 132,600> l_pix: 1.3050e-01 
