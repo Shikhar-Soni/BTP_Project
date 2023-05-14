@@ -34,4 +34,4 @@ You can find the jupyter notebooks associated with each model type in ./W-Net/JN
 
 The report containing all the data and detailed information is attached as "MRI_enhancements_using_neural_networks.pdf"
 
-# All the code related to augmenting the datasets can be found in ./datasets
+# All the code related to augmenting the datasets can be found in ./dataset_aug_files
