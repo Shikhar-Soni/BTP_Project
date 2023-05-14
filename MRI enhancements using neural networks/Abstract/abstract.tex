@@ -1,0 +1,28 @@
+
+% Thesis Abstract -----------------------------------------------------
+
+
+% \begin{abstractslong}    %uncommenting this line, gives a different abstract heading
+\begin{abstracts}        %this creates the heading for the abstract page
+
+Magnetic Resonance Imaging (MRI) is an essential medical imaging technique for diagnosing and monitoring various diseases. However, the low signal-to-noise ratio and long acquisition times of MR images can limit their clinical utility. In recent years, deep learning-based techniques have been proposed to enhance MR images.
+
+In this project, we mainly explore two different methods to enhance MR images, one includes the use of U-Nets to obtain a close to fully sampled MRI from under-sampled MRI and the other includes the use of diffusion models to convert a low-resolution MRI to a higher resolution.
+
+The first proposed approach is for getting a fully sampled MRI image from an under-sampled one. Here we train two U-Net models joined together to form a W-Net model, the input of the model is 3 consecutive slices of an MRI and it uses locality to improve on the previously existing W-net architecture \cite{8919674}.
+
+The second proposed approach for getting a higher resolution image from a lower resolution one works by using diffusion models and tries to improve on the known Super Resolution (SR) models \cite{saharia2021image} to get good results for MRIs while ensuring minimum artefacts.
+
+In conclusion, our study highlights the potential of deep learning-based approaches for enhancing MR images and provides insights into the benefits of using diffusion models and combined U-Net models (W-Net with locality) in this context.
+
+\end{abstracts}
+% \end{abstractslong}
+
+
+% ----------------------------------------------------------------------
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End: 

@@ -1,0 +1,70 @@
+
+\chapter{Our Solutions}\label{ch:soln}
+\ifpdf
+    \graphicspath{{Chapter2/Chapter2Figs/PNG/}{Chapter2/Chapter2Figs/PDF/}{Chapter2/Chapter2Figs/}}
+\else
+    \graphicspath{{Chapter2/Chapter2Figs/EPS/}{Chapter2/Chapter2Figs/}}
+\fi
+
+\section{MR Reconstruction Problem}\label{sec:prob_1}
+\markboth{\MakeUppercase{\thechapter. Our Solutions }}
+
+MR Reconstruction problem is a key area of research where the objective is to speed up the process of taking an MRI, the long wait time is problematic for a large group of patients such as children, people with fear of enclosed spaces, etc. A way to effectively tackle this problem is to take under-sampled MRI scans from a patient and try to fill in the gaps left behind by an incomplete scan with the help of neural networks.\\
+
+Our Solution builds upon the pre-existing W-Net \cite{8919674}. The working of the W-Net architecture goes as follows, it accepts a single k-space slice of an MRI. There are two components of the W-Net -- the first U-Net working in the k-space domain and the other U-Net working in the image domain connected to the output of the previous U-Net (before the information is passed over to the other it is converted back to the image domain). This process works together using a combined loss function, i.e., NRMSE (Normalized Root Mean Square) and gives a certain weightage to each loss (1\% weightage to the U-Net in the k-space domain and 99\% weightage to the U-Net in image domain). The priority here lies in reducing image domain loss.\\
+
+\subsection{Solution to reduce training time ($W-Net$ $Combined$)}
+
+Having limited resources and time is a common problem for medical imaging and we tried to think of a simple way to reduce training time for the model by coming up with the idea to split the W-Net back into two U-Nets and train them independently on two separate machines and then train the two independently trained models together.\\
+
+Individual U-Nets converge in lesser time than the complete W-Net and the idea was that combined training will help the model to converge quicker.\\
+
+The combined network will give results similar to W-Net and train quicker than W-Net.\\
+
+\subsection{Solution to improve image quality ($W-Net\;3-Layer$)}
+
+Having discussed a method to reduce training time, we propose a method to improve on the idea of the W-Net.\\
+
+Our solution uses the pre-existing W-Net architecture \cite{8919674} and adds another component to it, i.e., to use the localised information of the neighbouring slices to help learn the fully sampled MRI reconstruction. Here, instead of feeding one single slice of the MRI to our W-Net, we feed it 3 consecutive slices of an MRI (3 consecutive slices of an MRI are very similar in structure and look, and the information from the nearby slices act as additional information helpful to reconstruct a fully sampled MRI scan slice).\\
+
+We limit our solution to only 3 slices because otherwise the model becomes too large to train given the resources available to us and while it is possible to adjust this parameter to obtain better results, it can be a point to be explored in detail separately.\\
+
+\section{MR Super Resolution Problem}\label{sec:prob_2}
+\markboth{\MakeUppercase{\thechapter. My Second Chapter }}
+
+Super Resolution is a well-known problem in deep learning and it has numerous applications in medical imaging as well.\\
+
+Super Resolution of MRIs is a problem for multiple reasons given below.
+
+\begin{enumerate}
+\item MR images are more prone to noise because of reasons such as the motion of the patient, and noise caused by nearby electronics.
+
+\item Large amount of data is required for training a super-resolution model but it's difficult to come by a large amount of medical imaging data.
+
+\item MRIs contain complex features such as tissue contrast, noise, etc. that make it difficult to predict the high-resolution from the low-resolution image.
+\end{enumerate}
+
+Our goal is to tackle the main bottleneck that appears in medical imaging and that is the requirement of a large dataset size. To tackle this issue we used a pre-trained SR3 model, this pre-trained model had already been trained on human face data and performed well in SR tasks in reference to human faces.\\
+
+The issue of SR quality in MR images is another concern that we tackle by changing the likeness criterion for judging images. It's popular to use criteria such as L1 and L2 loss; they work well enough in general cases. But for MRIs, it's essential to capture the subtle details and show a contrast between different structures.\\
+
+To achieve the above, we propose the use of judgement criteria such as the use of SSIM (Structural Similarity Index) \cite{1284395} and FID (Fréchet Inception Distance) \cite{fid}. While FID and SSIM work well in terms of promoting structural similarity between the SR and the HR MR image, it causes noise to creep in and doesn't work as well as L1 or L2 loss when it comes to reducing the noise in the final resultant image.\\
+
+The idea is to use a mixture of both the structural similarity promoting criterion and the criterion that promotes the reduction of noise, hence a mixture of both is used and we end up with two new approaches that we shall refer to as SSIM Regularized SR3 and FID Regularized SR3.\\
+
+Both of the approaches use a combination of MSE with either SSIM or FID. The objective here is to study the impact of these on the resultant image in comparison to the original SR3.\\
+
+\nomenclature[zsr]{$SR$}{Super Resolution}
+\nomenclature[zhr]{$HR$}{High Resolution}
+
+The approaches discussed in this chapter will be discussed in more detail in Chapter \ref{Observations chapter} and there we will also compare the approaches to their original counterparts and present the observations related to them.
+
+% here we don't use MSE (Mean Square Error) as a judgement parameter for the likeness of two images because it doesn't ensure minimisation of artefacts, instead, we propose the use of SSIM (Structural Similarity Index) ~\cite{1284395} and FID (Fréchet Inception Distance) ~\cite{fid}
+
+
+% ------------------------------------------------------------------------
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End: 

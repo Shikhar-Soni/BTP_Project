@@ -1,0 +1,184 @@
+@INPROCEEDINGS{8919674,
+  author={Souza, Roberto and Frayne, Richard},
+  booktitle={2019 32nd SIBGRAPI Conference on Graphics, Patterns and Images (SIBGRAPI)}, 
+  title={A Hybrid Frequency-Domain/Image-Domain Deep Network for Magnetic Resonance Image Reconstruction}, 
+  year={2019},
+  volume={},
+  number={},
+  pages={257-264},
+  abstract={Decreasing magnetic resonance (MR) image acquisition times can potentially make MR examinations more accessible. Compressed sensing (CS)-based image reconstruction methods decrease MR acquisition time by reconstructing high-quality images from data that were originally sampled at rates inferior to the Nyquist-Shannon sampling theorem. Deep-learning methods have been used to solve the CS MR reconstruction problem. These proposed methods are able to quickly reconstruct images in a single pass using an appropriately trained network. A variety of different network architectures (e.g., U-nets and Residual U-nets) have been proposed to tackle the CS reconstruction problem. A drawback of these architectures is that they typically only work on image domain data. For undersampled data, the images computed by applying the inverse Fast Fourier Transform (iFFT) are aliased. In this work we propose a hybrid architecture, termed W-net, that works both in the k-space (or frequency-domain) and the image (or spatial) domains. Our network is composed of a complex-valued residual U-net in the k-space domain, an iFFT operation, and a real-valued Unet in the image domain. Our experiments demonstrated, using MR raw k-space data, that the proposed hybrid approach can potentially improve CS reconstruction compared to deep-learning networks that operate only in the image domain. In this study we compare our method with four previously published deep neural networks and examine their ability to reconstruct images that are subsequently used to generate regional volume estimates. Our technique was ranked second in the quantitative analysis, but qualitative analysis indicated that our reconstruction performed the best in hard to reconstruct regions, such as the cerebellum. All images reconstructed with our method were successfully post-processed, and showed good volumetry agreement compared with the fully sampled reconstruction measures.},
+  keywords={},
+  doi={10.1109/SIBGRAPI.2019.00042},
+  ISSN={2377-5416},
+  month={Oct},}
+
+@unknown{fid,
+author = {Yu, Yu and Zhang, Weibin and Deng, Yun},
+year = {2021},
+month = {09},
+pages = {},
+title = {Frechet Inception Distance (FID) for Evaluating GANs}
+}
+
+@ARTICLE{1284395,
+  author={Zhou Wang and Bovik, A.C. and Sheikh, H.R. and Simoncelli, E.P.},
+  journal={IEEE Transactions on Image Processing}, 
+  title={Image quality assessment: from error visibility to structural similarity}, 
+  year={2004},
+  volume={13},
+  number={4},
+  pages={600-612},
+  doi={10.1109/TIP.2003.819861}}
+
+@misc{goodfellow2014generative,
+      title={Generative Adversarial Networks}, 
+      author={Ian J. Goodfellow and Jean Pouget-Abadie and Mehdi Mirza and Bing Xu and David Warde-Farley and Sherjil Ozair and Aaron Courville and Yoshua Bengio},
+      year={2014},
+      eprint={1406.2661},
+      archivePrefix={arXiv},
+      primaryClass={stat.ML}
+}
+
+@misc{dhariwal2021diffusion,
+      title={Diffusion Models Beat GANs on Image Synthesis}, 
+      author={Prafulla Dhariwal and Alex Nichol},
+      year={2021},
+      eprint={2105.05233},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+@misc{saharia2021image,
+      title={Image Super-Resolution via Iterative Refinement}, 
+      author={Chitwan Saharia and Jonathan Ho and William Chan and Tim Salimans and David J. Fleet and Mohammad Norouzi},
+      year={2021},
+      eprint={2104.07636},
+      archivePrefix={arXiv},
+      primaryClass={eess.IV}
+}
+
+@misc{xia2017wnet,
+      title={W-Net: A Deep Model for Fully Unsupervised Image Segmentation}, 
+      author={Xide Xia and Brian Kulis},
+      year={2017},
+      eprint={1711.08506},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+
+@misc{lim2017enhanced,
+      title={Enhanced Deep Residual Networks for Single Image Super-Resolution}, 
+      author={Bee Lim and Sanghyun Son and Heewon Kim and Seungjun Nah and Kyoung Mu Lee},
+      year={2017},
+      eprint={1707.02921},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+
+@misc{shi2016realtime,
+      title={Real-Time Single Image and Video Super-Resolution Using an Efficient Sub-Pixel Convolutional Neural Network}, 
+      author={Wenzhe Shi and Jose Caballero and Ferenc Huszár and Johannes Totz and Andrew P. Aitken and Rob Bishop and Daniel Rueckert and Zehan Wang},
+      year={2016},
+      eprint={1609.05158},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+
+@INPROCEEDINGS{8919674,
+  author={Souza, Roberto and Frayne, Richard},
+  booktitle={2019 32nd SIBGRAPI Conference on Graphics, Patterns and Images (SIBGRAPI)}, 
+  title={A Hybrid Frequency-Domain/Image-Domain Deep Network for Magnetic Resonance Image Reconstruction}, 
+  year={2019},
+  volume={},
+  number={},
+  pages={257-264},
+  doi={10.1109/SIBGRAPI.2019.00042}}
+
+
+@article{SOUZA2018482,
+title = {An open, multi-vendor, multi-field-strength brain MR dataset and analysis of publicly available skull stripping methods agreement},
+journal = {NeuroImage},
+volume = {170},
+pages = {482-494},
+year = {2018},
+note = {Segmenting the Brain},
+issn = {1053-8119},
+doi = {https://doi.org/10.1016/j.neuroimage.2017.08.021},
+url = {https://www.sciencedirect.com/science/article/pii/S1053811917306687},
+author = {Roberto Souza and Oeslle Lucena and Julia Garrafa and David Gobbi and Marina Saluzzi and Simone Appenzeller and Letícia Rittner and Richard Frayne and Roberto Lotufo},
+keywords = {Public database, Skull stripping, Brain extraction, Brain segmentation, Brain MR image analysis, MP-RAGE},
+abstract = {This paper presents an open, multi-vendor, multi-field strength magnetic resonance (MR) T1-weighted volumetric brain imaging dataset, named Calgary-Campinas-359 (CC-359). The dataset is composed of images of older healthy adults (29–80 years) acquired on scanners from three vendors (Siemens, Philips and General Electric) at both 1.5 T and 3 T. CC-359 is comprised of 359 datasets, approximately 60 subjects per vendor and magnetic field strength. The dataset is approximately age and gender balanced, subject to the constraints of the available images. It provides consensus brain extraction masks for all volumes generated using supervised classification. Manual segmentation results for twelve randomly selected subjects performed by an expert are also provided. The CC-359 dataset allows investigation of 1) the influences of both vendor and magnetic field strength on quantitative analysis of brain MR; 2) parameter optimization for automatic segmentation methods; and potentially 3) machine learning classifiers with big data, specifically those based on deep learning methods, as these approaches require a large amount of data. To illustrate the utility of this dataset, we compared to the results of a supervised classifier, the results of eight publicly available skull stripping methods and one publicly available consensus algorithm. A linear mixed effects model analysis indicated that vendor (p−value<0.001) and magnetic field strength (p−value<0.001) have statistically significant impacts on skull stripping results.}
+}
+
+@misc{zbontar2019fastmri,
+      title={fastMRI: An Open Dataset and Benchmarks for Accelerated MRI}, 
+      author={Jure Zbontar and Florian Knoll and Anuroop Sriram and Tullie Murrell and Zhengnan Huang and Matthew J. Muckley and Aaron Defazio and Ruben Stern and Patricia Johnson and Mary Bruno and Marc Parente and Krzysztof J. Geras and Joe Katsnelson and Hersh Chandarana and Zizhao Zhang and Michal Drozdzal and Adriana Romero and Michael Rabbat and Pascal Vincent and Nafissa Yakubova and James Pinkerton and Duo Wang and Erich Owens and C. Lawrence Zitnick and Michael P. Recht and Daniel K. Sodickson and Yvonne W. Lui},
+      year={2019},
+      eprint={1811.08839},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+
+@article{menze2015multimodal,
+  title={The Multimodal Brain Tumor Image Segmentation Benchmark (BRATS)},
+  author={Menze, Bjoern H and Jakab, Andras and Bauer, Stefan and Kalpathy-Cramer, Jayashree and Farahani, Keyvan and Kirby, Justin and et al.},
+  journal={IEEE Transactions on Medical Imaging},
+  volume={34},
+  number={10},
+  pages={1993--2024},
+  year={2015},
+  doi={10.1109/TMI.2014.2377694},
+}
+
+@article{bakas2017advancing,
+  title={Advancing The Cancer Genome Atlas glioma MRI collections with expert segmentation labels and radiomic features},
+  author={Bakas, Spyridon and Akbari, Hamed and Sotiras, Aristeidis and Bilello, Michel and Rozycki, Martin and Kirby, Justin S and et al.},
+  journal={Nature Scientific Data},
+  volume={4},
+  pages={170117},
+  year={2017},
+  doi={10.1038/sdata.2017.117},
+}
+
+@article{bakas2018identifying,
+  title={Identifying the Best Machine Learning Algorithms for Brain Tumor Segmentation, Progression Assessment, and Overall Survival Prediction in the BRATS Challenge},
+  author={Bakas, Spyridon and Reyes, Mauricio and Jakab, Andras and Bauer, Stefan and Rempfler, Markus and Crimi, Alessandro and et al.},
+  journal={arXiv preprint arXiv:1811.02629},
+  year={2018},
+}
+
+@misc{karras2018progressive,
+      title={Progressive Growing of GANs for Improved Quality, Stability, and Variation}, 
+      author={Tero Karras and Timo Aila and Samuli Laine and Jaakko Lehtinen},
+      year={2018},
+      eprint={1710.10196},
+      archivePrefix={arXiv},
+      primaryClass={cs.NE}
+}
+
+@misc{karras2019stylebased,
+      title={A Style-Based Generator Architecture for Generative Adversarial Networks}, 
+      author={Tero Karras and Samuli Laine and Timo Aila},
+      year={2019},
+      eprint={1812.04948},
+      archivePrefix={arXiv},
+      primaryClass={cs.NE}
+}
+
+@misc{ho2020denoising,
+      title={Denoising Diffusion Probabilistic Models}, 
+      author={Jonathan Ho and Ajay Jain and Pieter Abbeel},
+      year={2020},
+      eprint={2006.11239},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+@misc{mathiasen2021backpropagating,
+      title={Backpropagating through Fr\'echet Inception Distance}, 
+      author={Alexander Mathiasen and Frederik Hvilshøj},
+      year={2021},
+      eprint={2009.14075},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}

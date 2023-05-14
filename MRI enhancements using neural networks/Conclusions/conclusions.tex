@@ -1,0 +1,22 @@
+\def\baselinestretch{1}
+\chapter{Conclusion}
+\ifpdf
+    \graphicspath{{Conclusions/ConclusionsFigs/PNG/}{Conclusions/ConclusionsFigs/PDF/}{Conclusions/ConclusionsFigs/}}
+\else
+    \graphicspath{{Conclusions/ConclusionsFigs/EPS/}{Conclusions/ConclusionsFigs/}}
+\fi
+
+From the observations made earlier, we can conclude the following for each of the solutions discussed in Chapter \ref{ch:soln}.\\
+
+Solution 1 discussed in section \ref{sec:prob_1} talks about the MR reconstruction problem and our solution to the two issues faced in medical imaging were W-Net Combined and W-Net 3-Layer using the pre-existing W-Net Architecture \cite{8919674}.\\
+
+From the observations made about W-Net Combined in \ref{sec:ob_wnet}, it can be seen that the model performed at par with the original W-Net while consuming less time to train than the original W-Net.\\
+
+The observations made about the W-Net 3-Layer show that the model also performed at par with the W-Net but with reduced convolution layers to adjust for the low specs of the hardware allotted to us. Despite the following issue, the model showed great performance with very low variance and showed a promise for improvement if trained in a better environment.\\
+
+Solution 2 discussed in section \ref{sec:prob_2} talks about the MR Super Resolution Problem and our solution aims to tackle the issue of quality in MR images, while also aiming to reduce training time and training dataset by using previously trained models on different problems (such as human face super-resolution). The solution proposed by us is the use of FID and SSIM regularization in SR3 algorithm \cite{saharia2021image}.\\
+
+The qualitative observations made in the section \ref{Observation - SR3} show that the SSIM Regularized SR3 performed the best but the difference is small as far as we could observe for 100K iterations and it is possible that the results may go in another direction if the model is trained for more iterations. It is also important to note that the model has a small batch size that may be the cause of high variations thus affecting the results.\\
+
+Overall, while our experiments were limited by resources and time, we still managed to show that the newly proposed models are able to perform at least at par with the existing models or slightly better. We managed to reduce training time with the help of W-Net Combined, showed promise of improved performance with W-Net 3-layer, and showed improved performance with the help of FIDR and SSIMR in SR3 when compared to their baseline models respectively.\\
+
